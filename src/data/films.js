@@ -10,7 +10,7 @@ const FILMS = [
   { file: 'soft_pop', title: 'Soft Pop', cat: 'Character animation', line: 'A playful animated world for a playful product.' },
   { file: 'hydra', title: 'Dolce Cream', cat: 'Skincare / product film', line: 'Skincare revealed in a cool, futuristic world.' },
   { file: 'clothes', title: 'VÉRA', cat: 'Fashion film', line: 'One snap, a new version of you.' },
-  { file: 'mini', title: 'An Unpredictable Vacation', cat: 'Surreal short film', line: "A trip that isn't quite what it seems." },
+  { file: 'mini', title: 'Absurdity', cat: 'Surreal short film', line: "A trip that isn't quite what it seems." },
   { file: 'voda', title: 'VODA', cat: 'Beverage / product film', line: 'Ruby grapefruit, movement, and a splash of color.' }
 ];
 
