@@ -28,9 +28,10 @@ export default function App() {
   }, [menuOpen, dialogOpen]);
 
   const ui = useMemo(() => ({
+    overlayOpen: dialogOpen,
     openFilm: (i) => { setMenuOpen(false); setFilmIndex(i); },
     openForm: () => { setMenuOpen(false); setFormOpen(true); }
-  }), []);
+  }), [dialogOpen]);
 
   return (
     <UIContext.Provider value={ui}>

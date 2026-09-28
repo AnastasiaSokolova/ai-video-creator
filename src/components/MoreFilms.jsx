@@ -1,10 +1,10 @@
 import { films, FEATURED_COUNT } from '../data/films.js';
 import { useUI } from '../context.js';
-import { useHoverPreview } from '../hooks/media.js';
+import { useVideoPreview } from '../hooks/media.js';
 
 function FilmRow({ film }) {
   const { openFilm } = useUI();
-  const { videoRef, missing, onVideoError, hoverProps } = useHoverPreview();
+  const { videoRef, missing, onVideoError, hoverProps } = useVideoPreview();
   return (
     <li data-reveal>
       <button type="button" className="film-row" aria-label={film.playLabel} onClick={() => openFilm(film.index)} {...hoverProps}>
