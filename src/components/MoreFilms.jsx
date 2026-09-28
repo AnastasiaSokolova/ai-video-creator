@@ -1,15 +1,16 @@
 import { films, FEATURED_COUNT } from '../data/films.js';
 import { useUI } from '../context.js';
 import { useVideoPreview } from '../hooks/media.js';
+import PreviewMedia from './PreviewMedia.jsx';
 
 function FilmRow({ film }) {
   const { openFilm } = useUI();
-  const { videoRef, missing, onVideoError, hoverProps } = useVideoPreview();
+  const { missing, playing, videoProps, hoverProps } = useVideoPreview();
   return (
     <li data-reveal>
       <button type="button" className="film-row" aria-label={film.playLabel} onClick={() => openFilm(film.index)} {...hoverProps}>
         <span className={`row-thumb ${missing ? 'film-frame is-missing' : ''}`} data-file={film.file + '.mp4'}>
-          <video ref={videoRef} src={film.src} poster={film.poster} muted playsInline loop preload="none" onError={onVideoError} />
+          <PreviewMedia film={film} playing={playing} videoProps={videoProps} />
         </span>
         <span className="row-num">{film.num}</span>
         <span className="row-body">

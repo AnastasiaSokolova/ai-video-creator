@@ -20,28 +20,46 @@ const stop = (v) => {
 // Muted looping preview for a film tile.
 // Mouse: plays on hover. Touch: plays while the tile is mostly on screen,
 // since there's no hover. Paused whenever the viewer or form is open.
+// `playing` stays false until frames are actually rendering, so the tile can
+// keep showing its poster image instead of a black frame while the video loads.
 export function useVideoPreview() {
   const { overlayOpen } = useUI();
   const videoRef = useRef(null);
   const [missing, setMissing] = useState(false);
+  const [playing, setPlaying] = useState(false);
   const allowed = () => !missing && !prefersReducedMotion() && !saveData();
 
   useEffect(() => {
     const v = videoRef.current;
     if (!v || canHover() || !allowed() || !('IntersectionObserver' in window)) return;
     if (overlayOpen) { v.pause(); return; }
-    const io = new IntersectionObserver(([e]) => {
+
+    // Start buffering about a screen before the tile arrives, so it can start promptly
+    const warm = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      if (v.preload !== 'auto') { v.preload = 'auto'; v.load(); }
+      warm.disconnect();
+    }, { rootMargin: '100% 0px' });
+
+    const play = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) { v.muted = true; safePlay(v); } else stop(v);
     }, { threshold: 0.6 });
-    io.observe(v);
-    return () => { io.disconnect(); v.pause(); };
+
+    warm.observe(v);
+    play.observe(v);
+    return () => { warm.disconnect(); play.disconnect(); v.pause(); };
     // allowed() depends on `missing`, listed below
   }, [overlayOpen, missing]);
 
   return {
-    videoRef,
     missing,
-    onVideoError: () => setMissing(true),
+    playing,
+    videoProps: {
+      ref: videoRef,
+      onPlaying: () => setPlaying(true),
+      onPause: () => setPlaying(false),
+      onError: () => setMissing(true)
+    },
     hoverProps: {
       onMouseEnter: () => {
         const v = videoRef.current;

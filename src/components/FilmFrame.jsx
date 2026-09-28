@@ -1,10 +1,11 @@
 import { useUI } from '../context.js';
 import { useVideoPreview } from '../hooks/media.js';
+import PreviewMedia from './PreviewMedia.jsx';
 
 // 9:16 video tile: previews on hover (mouse) or while on screen (touch), opens the viewer on click.
 export default function FilmFrame({ film, className = '', preload = 'none', children }) {
   const { openFilm } = useUI();
-  const { videoRef, missing, onVideoError, hoverProps } = useVideoPreview();
+  const { missing, playing, videoProps, hoverProps } = useVideoPreview();
 
   return (
     <button
@@ -15,7 +16,7 @@ export default function FilmFrame({ film, className = '', preload = 'none', chil
       onClick={() => openFilm(film.index)}
       {...hoverProps}
     >
-      <video ref={videoRef} src={film.src} poster={film.poster} muted playsInline loop preload={preload} onError={onVideoError} />
+      <PreviewMedia film={film} playing={playing} videoProps={videoProps} preload={preload} />
       {children}
     </button>
   );
