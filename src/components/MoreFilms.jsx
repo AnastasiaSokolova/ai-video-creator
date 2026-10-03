@@ -23,16 +23,23 @@ function FilmRow({ film }) {
   );
 }
 
+// Spelled-out count so the intro stays right when films are added or removed
+const COUNT_WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+
 export default function MoreFilms() {
+  const more = films.slice(FEATURED_COUNT);
+  if (!more.length) return null;
+  const count = COUNT_WORDS[more.length] ?? String(more.length);
+
   return (
     <section className="section section--rule section--tight" aria-labelledby="more-h">
       <div className="container split">
         <div className="split-head" data-reveal>
           <h2 id="more-h" className="display display--sm">More <em>films</em></h2>
-          <p className="muted">Four more short pieces, from skincare to surreal.</p>
+          <p className="muted">{count} more short {more.length === 1 ? 'piece' : 'pieces'}, from skincare to surreal.</p>
         </div>
         <ul className="film-list">
-          {films.slice(FEATURED_COUNT).map((f) => <FilmRow key={f.file} film={f} />)}
+          {more.map((f) => <FilmRow key={f.file} film={f} />)}
         </ul>
       </div>
     </section>
