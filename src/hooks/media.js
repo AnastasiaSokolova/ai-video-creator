@@ -15,7 +15,9 @@ export const safePlay = (v) => {
 // with reduced motion or data saver on.
 // `playing` stays false until frames are actually rendering, so the frame can
 // keep showing its poster image instead of a black frame while the video loads.
-export function useVideoPreview() {
+// `soundRef` (optional): while soundRef.current is true the video isn't re-muted
+// when it scrolls back into view (the hero's "Sound on" button).
+export function useVideoPreview({ soundRef } = {}) {
   const { overlayOpen } = useUI();
   const videoRef = useRef(null);
   const [missing, setMissing] = useState(false);
@@ -34,15 +36,16 @@ export function useVideoPreview() {
     }, { rootMargin: '100% 0px' });
 
     const play = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { v.muted = true; safePlay(v); } else v.pause();
+      if (e.isIntersecting) { v.muted = !soundRef?.current; safePlay(v); } else v.pause();
     }, { threshold: 0.5 });
 
     warm.observe(v);
     play.observe(v);
     return () => { warm.disconnect(); play.disconnect(); v.pause(); };
-  }, [overlayOpen, missing]);
+  }, [overlayOpen, missing, soundRef]);
 
   return {
+    videoRef,
     missing,
     playing,
     videoProps: {

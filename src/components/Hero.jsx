@@ -1,38 +1,35 @@
-import { useEffect, useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useUI } from '../context.js';
 import { HERO_VIDEO } from '../data/projects.js';
-import { prefersReducedMotion, useVideoPreview } from '../hooks/media.js';
+import { safePlay, useVideoPreview } from '../hooks/media.js';
 import PreviewMedia from './PreviewMedia.jsx';
-
-const pad = (n) => String(n).padStart(2, '0');
-
-// Running 24fps timecode over the hero video, as in the design
-function useTimecode(ref) {
-  useEffect(() => {
-    const start = performance.now();
-    const id = setInterval(() => {
-      if (!ref.current) return;
-      const f = Math.floor((performance.now() - start) / (1000 / 24));
-      const s = Math.floor(f / 24);
-      ref.current.textContent = `00:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}:${pad(f % 24)}`;
-    }, prefersReducedMotion() ? 1000 : 1000 / 24);
-    return () => clearInterval(id);
-  }, [ref]);
-}
 
 export default function Hero() {
   const { t, lang } = useUI();
-  const tcRef = useRef(null);
-  const { playing, videoProps } = useVideoPreview();
-  useTimecode(tcRef);
+  // Browsers only allow autoplay when muted, so the video starts silent and
+  // the visitor turns sound on with the button (a tap counts as permission).
+  const [soundOn, setSoundOn] = useState(false);
+  const soundRef = useRef(false);
+  const { videoRef, playing, videoProps } = useVideoPreview({ soundRef });
+
+  const toggleSound = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    const next = !soundOn;
+    soundRef.current = next;
+    setSoundOn(next);
+    v.muted = !next;
+    if (next && v.paused) safePlay(v); // also starts it when autoplay was off (reduced motion, data saver)
+  };
 
   return (
     <section className={`hero lang-${lang}`} aria-labelledby="hero-title">
       <div className="hero-reel frame">
         <PreviewMedia film={HERO_VIDEO} playing={playing} videoProps={videoProps} preload="auto" />
-        <div className="hero-reel-meta mono" aria-hidden="true">
-          <span>{t.reel}</span><span ref={tcRef}>00:00:00:00</span>
-        </div>
+        <button type="button" className="sound-toggle mono" aria-pressed={soundOn} onClick={toggleSound}>
+          <span className={`sound-icon ${soundOn ? 'is-on' : ''}`} aria-hidden="true"><i /><i /><i /></span>
+          {soundOn ? t.soundOff : t.soundOn}
+        </button>
       </div>
 
       <h1 id="hero-title" className="hero-title">
