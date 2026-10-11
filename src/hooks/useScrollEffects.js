@@ -7,11 +7,11 @@ export function useReveal() {
     if (prefersReducedMotion() || !('IntersectionObserver' in window)) return;
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
-        if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+        if (e.isIntersecting) { e.target.dataset.revealed = ''; io.unobserve(e.target); }
       });
     }, { rootMargin: '0px 0px -8% 0px' });
     document.querySelectorAll('[data-reveal]').forEach((el) => {
-      if (el.getBoundingClientRect().top < innerHeight) el.classList.add('is-visible');
+      if (el.getBoundingClientRect().top < innerHeight) el.dataset.revealed = '';
       else io.observe(el);
     });
     document.documentElement.classList.add('js-reveal');

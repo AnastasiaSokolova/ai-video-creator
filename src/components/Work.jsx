@@ -1,5 +1,5 @@
 import { useUI } from '../context.js';
-import { byId, projectName, projectShort, projects } from '../data/projects.js';
+import { byId, projectShort, projects } from '../data/projects.js';
 import FilmFrame, { WatchLink } from './FilmFrame.jsx';
 
 const ROMAN = ['I', 'II', 'III'];
@@ -110,17 +110,21 @@ function RoomProject({ project }) {
   );
 }
 
-// UGC and Jewelry: smaller cards side by side
-function CardProject({ project, offset = false, tag }) {
+// Cupcake, UGC and Jewelry: smaller cards in one row (wraps on narrower screens)
+function CardProject({ project, tag, label }) {
   const { t } = useUI();
   const copy = t.p[project.textKey];
+  // UGC and Jewelry have a translated two-part title; Cupcake uses its name in italics
+  const title = copy.t1
+    ? <>{copy.t1}<span className="accent-italic">{copy.t2}</span></>
+    : <span className="italic">{project.name}</span>;
   return (
-    <article id={project.id} className={`card ${offset ? 'card-offset' : 'card-indent'}`} aria-labelledby={project.id + '-t'} data-reveal>
+    <article id={project.id} className="card" aria-labelledby={project.id + '-t'} data-reveal>
       <FilmFrame project={project}><span className="frame-tag mono">{tag} · 9:16</span></FilmFrame>
       <Eyebrow project={project} cat={copy.cat} />
-      <h3 id={project.id + '-t'} className="serif card-title">{copy.t1}<span className="accent-italic">{copy.t2}</span></h3>
+      <h3 id={project.id + '-t'} className="serif card-title">{title}</h3>
       <p className="body-copy small">{copy.d}</p>
-      <WatchLink project={project} label={t.watchVideo} />
+      <WatchLink project={project} label={label} />
     </article>
   );
 }
@@ -150,21 +154,11 @@ export default function Work() {
 
       {room505 && <RoomProject project={room505} />}
 
-      <section className="shorts" aria-label={cupcake ? projectName(cupcake, t) : undefined}>
-        {cupcake && (
-          <article id={cupcake.id} className="cupcake" aria-labelledby="cup-t">
-            <div className="cupcake-text" data-reveal>
-              <Eyebrow project={cupcake} cat={t.p.cupcake.cat} />
-              <h3 id="cup-t" className="serif feature-title italic">Cupcake</h3>
-              <p className="body-copy">{t.p.cupcake.d}</p>
-              <WatchLink project={cupcake} label={t.watchShort} />
-            </div>
-            <div className="cupcake-media" data-reveal><FilmFrame project={cupcake} /></div>
-          </article>
-        )}
+      <section className="shorts" aria-label={`${t.work1} ${t.work2}`}>
         <div className="cards">
-          {ugc && <CardProject project={ugc} tag="UGC" />}
-          {jewelry && <CardProject project={jewelry} tag={t.film} offset={!!ugc} />}
+          {cupcake && <CardProject project={cupcake} tag={t.film} label={t.watchShort} />}
+          {ugc && <CardProject project={ugc} tag="UGC" label={t.watchVideo} />}
+          {jewelry && <CardProject project={jewelry} tag={t.film} label={t.watchVideo} />}
         </div>
         <div className="more-line mono muted" data-reveal>
           <span>{t.moreLine}</span>
