@@ -158,8 +158,10 @@ section[id], article[id] { scroll-margin-top: 72px; }
 .sound-icon.is-on i:nth-child(3) { animation-delay: -.7s; }
 @keyframes eq { 0%, 100% { height: 3px; } 50% { height: 11px; } }
 @media (prefers-reduced-motion: reduce) { .sound-icon.is-on i { animation: none; height: 8px; } }
+/* The title overlaps the video on larger screens (as designed); pointer-events: none lets
+   clicks reach the video's "Sound on" button underneath. The title has no links of its own. */
 .hero-title {
-  position: relative; z-index: 2; max-width: 100%;
+  position: relative; z-index: 2; max-width: 100%; pointer-events: none;
   display: flex; flex-direction: column;
   font-family: var(--serif); font-weight: 400; letter-spacing: -.02em; color: var(--text);
   font-size: clamp(64px, 14.5vw, 240px); line-height: .9;
