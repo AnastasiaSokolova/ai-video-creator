@@ -1,9 +1,18 @@
+import { useUI } from '../context.js';
+
+// Text-only for now; the design's 4:5 portrait can go back in once there's a photo.
 export default function About() {
+  const { t } = useUI();
   return (
-    <section id="about" className="section section--rule" aria-labelledby="about-h">
-      <div className="container about">
-        <h2 id="about-h" className="display" data-reveal>Hi, I'm <em>Anastasiia.</em></h2>
-        <p data-reveal>I'm an independent AI video creator who loves the space between a strong visual idea and the feeling it leaves behind. I develop concepts, direct the scenes, and bring them together through editing, pacing, and sound. My work moves between polished product films and small, unexpected stories.</p>
+    <section id="about" className="about" aria-labelledby="about-t">
+      <div className="about-text" data-reveal>
+        <p className="mono muted eyebrow">{t.nav.about}</p>
+        <h2 id="about-t" className="serif about-title">{t.ab1}<span className="accent-italic">{t.ab2}</span></h2>
+        <div className="about-cols">
+          <p className="body-copy">{t.abP1}</p>
+          <p className="body-copy">{t.abP2}</p>
+        </div>
+        <p className="mono muted disciplines">{t.disciplines}</p>
       </div>
     </section>
   );

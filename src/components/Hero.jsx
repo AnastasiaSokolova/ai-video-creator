@@ -1,74 +1,50 @@
-import { useEffect, useRef, useState } from 'react';
-import { films, HERO } from '../data/films.js';
-import { SKILLS } from '../data/content.js';
+import { useEffect, useRef } from 'react';
 import { useUI } from '../context.js';
-import { prefersReducedMotion, safePlay } from '../hooks/media.js';
-import FilmFrame from './FilmFrame.jsx';
-import FormLink from './FormLink.jsx';
+import { SHOWREEL } from '../data/projects.js';
+import { prefersReducedMotion, useVideoPreview } from '../hooks/media.js';
+import PreviewMedia from './PreviewMedia.jsx';
 
-// `paused` is true while a dialog is open, so the muted hero loop doesn't compete with the viewer.
-export default function Hero({ paused }) {
-  const { openFilm } = useUI();
-  const videoRef = useRef(null);
-  const [visible, setVisible] = useState(true);
-  const [missing, setMissing] = useState(false);
-  const main = films[HERO.main];
+const pad = (n) => String(n).padStart(2, '0');
 
+// Running 24fps timecode over the showreel, as in the design
+function useTimecode(ref) {
   useEffect(() => {
-    const v = videoRef.current;
-    if (!v || !('IntersectionObserver' in window)) return;
-    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { threshold: 0.25 });
-    io.observe(v);
-    return () => io.disconnect();
-  }, []);
+    const start = performance.now();
+    const id = setInterval(() => {
+      if (!ref.current) return;
+      const f = Math.floor((performance.now() - start) / (1000 / 24));
+      const s = Math.floor(f / 24);
+      ref.current.textContent = `00:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}:${pad(f % 24)}`;
+    }, prefersReducedMotion() ? 1000 : 1000 / 24);
+    return () => clearInterval(id);
+  }, [ref]);
+}
 
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = true;
-    if (visible && !paused && !prefersReducedMotion()) safePlay(v);
-    else v.pause();
-  }, [visible, paused]);
+export default function Hero() {
+  const { t, lang } = useUI();
+  const tcRef = useRef(null);
+  const { playing, videoProps } = useVideoPreview();
+  useTimecode(tcRef);
 
   return (
-    <section className="hero container" aria-label="Introduction">
-      <div className="hero-bg" aria-hidden="true"><div className="bg-word" data-parallax="0.25">feel</div></div>
-      <div className="hero-inner">
-        <div className="hero-copy">
-          <p className="eyebrow"><span className="rule" aria-hidden="true" />INDEPENDENT AI VIDEO CREATOR</p>
-          <h1>Make them stop. Then make them <em>feel</em><span className="accent">.</span></h1>
-          <p className="lede">Concept-led films for products, brands and stories that deserve more than another ordinary video. From the first visual hook to the final edit and sound.</p>
-          <div className="actions">
-            <a href="#work" className="btn btn-outline">Watch the work</a>
-            <FormLink className="btn btn-accent">Start a project</FormLink>
-          </div>
-          <ul className="skills" aria-label="What I make">
-            {SKILLS.map((s) => <li key={s}>{s}</li>)}
-          </ul>
+    <section className={`hero lang-${lang}`} aria-labelledby="hero-title">
+      <div className="hero-reel frame">
+        <PreviewMedia film={SHOWREEL} playing={playing} videoProps={videoProps} preload="auto" />
+        <div className="hero-reel-meta mono" aria-hidden="true">
+          <span>{t.reel}</span><span ref={tcRef}>00:00:00:00</span>
         </div>
+      </div>
 
-        <div className="hero-reel">
-          <FilmFrame film={films[HERO.left]} className="hero-side hero-side--left">
-            <span className="frame-caption">{films[HERO.left].title}</span>
-          </FilmFrame>
+      <h1 id="hero-title" className="hero-title">
+        <span className="hero-kicker"><span className="rule" aria-hidden="true" />{t.h1a}</span>
+        <span className="hero-line accent-italic">{t.h1b}</span>
+        <span className="hero-line hero-indent">{t.h1c}</span>
+      </h1>
 
-          <div className={`film-frame hero-main ${missing ? 'is-missing' : ''}`} data-file={main.file + '.mp4'}>
-            <video ref={videoRef} className="hero-video" src={main.src} poster={main.poster} muted playsInline loop preload="metadata" onError={() => setMissing(true)} />
-            <div className="hero-main-bar">
-              <div className="hero-main-title">
-                <span className="serif">{main.title}</span>
-                <span className="meta">{main.cat}</span>
-              </div>
-              <button type="button" className="pill-play" aria-label={main.playLabel} onClick={() => openFilm(main.index)}>
-                <span className="tri" aria-hidden="true" />Sound on
-              </button>
-            </div>
-          </div>
-
-          <FilmFrame film={films[HERO.right]} className="hero-side hero-side--right">
-            <span className="frame-caption">{films[HERO.right].title}</span>
-          </FilmFrame>
-        </div>
+      <div className="hero-foot">
+        <p className="hero-sub">{t.heroSub}</p>
+        <p className="mono muted">{t.title}</p>
+        <a href="#work" className="arrow-link">{t.heroCta} <span aria-hidden="true">↓</span></a>
       </div>
     </section>
   );

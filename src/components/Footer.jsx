@@ -1,13 +1,12 @@
-import { NAME, ROLE } from '../data/content.js';
+import { useUI } from '../context.js';
 
 export default function Footer() {
+  const { t } = useUI();
   return (
-    <footer className="site-footer">
-      <div className="container footer-inner">
-        <span>© {new Date().getFullYear()} {NAME} — {ROLE}</span>
-        <span>All films shown are independent concepts and personal projects.</span>
-        <a href="#top">Back to top ↑</a>
-      </div>
+    <footer className="site-footer mono">
+      <span>© {new Date().getFullYear()} {t.name}</span>
+      <span>{t.title}</span>
+      <a href="#top">{t.top} ↑</a>
     </footer>
   );
 }

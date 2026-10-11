@@ -1,6 +1,7 @@
-# Anastasiia Sokolova — portfolio
+# Ana Sokolova — portfolio
 
-React + Vite single-page portfolio.
+React + Vite single-page portfolio, built from the "Ana Sokolova Portfolio" Claude Design export
+(`Ana Sokolova Portfolio.dc.html` is kept as the design reference; the site doesn't use it).
 
 ## Commands
 
@@ -11,28 +12,38 @@ npm run build    # production build into dist/
 npm run preview  # serve the built dist/ locally
 ```
 
-Deploy by uploading the contents of `dist/` to any static host (Netlify, Vercel, GitHub Pages, Cloudflare Pages).
+Deploy by uploading the contents of `dist/` to any static host. The live site deploys from `main` on GitHub.
 
 ## Where things live
 
-| To change…                                   | Edit                                   |
-| -------------------------------------------- | -------------------------------------- |
-| Film titles, categories, order, hero picks   | `src/data/films.js`                    |
-| Services, prices, process steps, FAQ, email  | `src/data/content.js`                  |
-| Page sections                                | `src/components/*.jsx`                 |
-| Colours, fonts, spacing, breakpoints         | `src/styles.css` (tokens at the top)   |
-| Video files and poster images                | `public/videos/`                       |
+| To change…                                         | Edit                                  |
+| -------------------------------------------------- | ------------------------------------- |
+| Any text, EN and UA (services, prices, about…)     | `src/data/i18n.js`                    |
+| Which projects show, their order, video and stills | `src/data/projects.js`                |
+| Contact form email address                          | `CONTACT_EMAIL` in `src/data/projects.js` |
+| Page sections                                       | `src/components/*.jsx`                |
+| Colours, fonts, spacing                             | `src/styles.css` (tokens at the top)  |
+| Videos + poster frames                              | `public/videos/`                      |
+| Campaign stills                                     | `public/images/`                      |
 
-## Adding a film
+A project with `hidden: true` in `projects.js` is left off the page, the work index and the viewer, and the
+numbering closes up.
 
-1. Export it as H.264 MP4 (HEVC/.mov won't play in Firefox or many Android/Windows browsers). With ffmpeg:
-   ```bash
-   ffmpeg -i input.mov -vf "scale=720:-2" -c:v libx264 -pix_fmt yuv420p -crf 23 -preset slow \
-          -c:a aac -b:a 128k -movflags +faststart public/videos/NAME.mp4
-   ffmpeg -ss 0.6 -i input.mov -frames:v 1 -vf "scale=720:-2" -q:v 4 public/videos/NAME.jpg
-   ```
-2. Add an entry to `FILMS` in `src/data/films.js` with `file: 'NAME'`. The first six are featured; the rest appear under "More films".
+## Adding a video
 
-## Inquiry form
+Source clips are usually HEVC, which won't play in Firefox or many Android/Windows browsers. Convert to H.264:
 
-Submissions go to formsubmit.co (address in `src/data/content.js`). The first submission triggers a one-time activation email; inquiries arrive once it's confirmed.
+```bash
+ffmpeg -i input.mp4 -vf "scale=720:-2" -c:v libx264 -pix_fmt yuv420p -crf 23 -preset slow \
+       -c:a aac -b:a 128k -movflags +faststart public/videos/NAME.mp4
+ffmpeg -ss 0.6 -i input.mp4 -frames:v 1 -vf "scale=720:-2" -q:v 4 public/videos/NAME.jpg
+```
+
+For 16:9 films use `scale=1280:-2`. Stills: `ffmpeg -i still.png -vf "scale=1200:-2" -q:v 3 public/images/NAME.jpg`.
+
+The hero showreel (`public/videos/showreel.mp4`) is a silent ~13 s montage cut from the project films.
+
+## Contact form
+
+Submissions go to formsubmit.co (address in `src/data/projects.js`). The first submission from a new domain
+triggers a one-time activation email; inquiries arrive once it's confirmed.

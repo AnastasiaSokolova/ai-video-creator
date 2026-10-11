@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { prefersReducedMotion } from './media.js';
 
 // Fades [data-reveal] elements in as they scroll into view.
@@ -22,28 +22,32 @@ export function useReveal() {
   }, []);
 }
 
-// Drifts [data-parallax="<speed>"] elements relative to their parent while scrolling.
-export function useParallax() {
+// Header state: `scrolled` past the top, `hidden` while scrolling down (auto-hide nav).
+export function useNavScroll(keepVisible) {
+  const [state, setState] = useState({ scrolled: false, hidden: false });
   useEffect(() => {
-    const els = [...document.querySelectorAll('[data-parallax]')];
-    if (prefersReducedMotion() || !els.length) return;
-    let raf = null;
-    const update = () => {
-      raf = null;
-      const h = innerHeight;
-      els.forEach((el) => {
-        const r = el.parentElement.getBoundingClientRect();
-        if (r.bottom < -200 || r.top > h + 200) return;
-        const off = (r.top + r.height / 2 - h / 2) * parseFloat(el.dataset.parallax);
-        el.style.transform = `translate3d(0, ${off.toFixed(1)}px, 0)`;
-      });
+    let lastY = scrollY;
+    const onScroll = () => {
+      const y = scrollY;
+      const next = { scrolled: y > 40, hidden: !keepVisible && y > 160 && y > lastY };
+      setState((s) => (s.scrolled === next.scrolled && s.hidden === next.hidden ? s : next));
+      lastY = y;
     };
-    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    onScroll();
     addEventListener('scroll', onScroll, { passive: true });
-    update();
-    return () => {
-      removeEventListener('scroll', onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, []);
+    return () => removeEventListener('scroll', onScroll);
+  }, [keepVisible]);
+  return state;
+}
+
+export function useMediaQuery(query) {
+  const [matches, setMatches] = useState(() => matchMedia(query).matches);
+  useEffect(() => {
+    const mq = matchMedia(query);
+    const on = () => setMatches(mq.matches);
+    on();
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, [query]);
+  return matches;
 }

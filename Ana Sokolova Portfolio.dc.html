@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Ana Sokolova — AI Visual Creator &amp; Creative Director</title>
+<meta name="description" content="Ana Sokolova is an AI visual creator and creative director producing commercial videos, product photography, visual campaigns, animated stories and cinematic content for brands.">
+<meta property="og:title" content="Ana Sokolova — AI Visual Creator &amp; Creative Director">
+<meta property="og:description" content="Commercial video, product photography and complete visual campaigns — created with AI, directed with intent.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://anasokolova.com">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="uk_UA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0e0d0c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Cormorant+Garamond:ital,wght@0,500;1,500&amp;family=Manrope:wght@300;400;500&amp;family=Hanken+Grotesk:wght@300;400;500&amp;family=IBM+Plex+Mono:wght@400&amp;display=swap">
+<script src="./image-slot.js"></script>
+<style>
+html{scroll-behavior:smooth;background:#0e0d0c}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:#0e0d0c;color:#ece6da;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+*{box-sizing:border-box}
+a{color:#ece6da;text-decoration:none}
+a:hover{color:#d39a6e}
+::selection{background:#d39a6e;color:#0e0d0c}
+input,select,textarea,button{font:inherit}
+select option{background:#161412;color:#ece6da}
+</style>
+</helmet>
+
+<div style="font-family:'Hanken Grotesk','Manrope',sans-serif;font-weight:300;background:#0e0d0c;color:#ece6da;min-height:100vh;overflow-x:hidden;position:relative;overflow-wrap:break-word">
+
+<sc-if value="{{ grain }}" hint-placeholder-val="{{ true }}">
+<div aria-hidden="true" style="position:fixed;inset:0;z-index:60;pointer-events:none;opacity:0.07;mix-blend-mode:overlay;background-image:url(&quot;data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>&quot;)"></div>
+</sc-if>
+
+<header data-screen-label="Nav" style="position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:14px clamp(20px,5vw,72px);transition:transform .6s cubic-bezier(.2,.7,.1,1), background .6s;transform:{{ navTransform }};background:{{ navBg }}">
+  <a href="#top" aria-label="{{ t.homeLabel }}" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.32em;white-space:nowrap;padding:8px 0">ANA SOKOLOVA</a>
+  <div style="display:flex;align-items:center;gap:clamp(16px,3vw,40px)">
+    <sc-if value="{{ isWide }}" hint-placeholder-val="{{ true }}">
+      <nav aria-label="{{ t.navLabel }}" style="display:flex;gap:clamp(16px,3vw,40px);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase">
+        <a href="#work" style="color:#a39c90;transition:color .4s;padding:8px 0" style-hover="color:#ece6da">{{ t.nav.work }}</a>
+        <a href="#services" style="color:#a39c90;transition:color .4s;padding:8px 0" style-hover="color:#ece6da">{{ t.nav.services }}</a>
+        <a href="#about" style="color:#a39c90;transition:color .4s;padding:8px 0" style-hover="color:#ece6da">{{ t.nav.about }}</a>
+        <a href="#contact" style="color:#d39a6e;transition:color .4s;padding:8px 0" style-hover="color:#ece6da">{{ t.nav.contact }}</a>
+      </nav>
+      <span aria-hidden="true" style="width:1px;height:14px;background:rgba(236,230,218,.25)"></span>
+    </sc-if>
+    <div role="group" aria-label="{{ t.langLabel }}" style="display:flex;align-items:center;gap:2px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em">
+      <button type="button" lang="en" aria-pressed="{{ isEn }}" aria-label="English" onClick="{{ setEn }}" style="background:none;border:0;padding:12px 6px;cursor:pointer;letter-spacing:.18em;transition:color .4s;color:{{ enColor }}" style-hover="color:#ece6da">EN</button>
+      <span aria-hidden="true" style="color:#5f5951">/</span>
+      <button type="button" lang="uk" aria-pressed="{{ isUa }}" aria-label="Українська" onClick="{{ setUa }}" style="background:none;border:0;padding:12px 6px;cursor:pointer;letter-spacing:.18em;transition:color .4s;color:{{ uaColor }}" style-hover="color:#ece6da">UA</button>
+    </div>
+    <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ false }}">
+      <button type="button" aria-expanded="{{ menuOpen }}" aria-controls="mobile-menu" onClick="{{ toggleMenu }}" style="background:none;border:0;border-left:1px solid rgba(236,230,218,.25);color:#ece6da;padding:12px 0 12px 16px;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase">{{ menuLabel }}</button>
+    </sc-if>
+  </div>
+</header>
+
+<sc-if value="{{ showMenu }}" hint-placeholder-val="{{ false }}">
+  <nav id="mobile-menu" aria-label="{{ t.navLabel }}" style="position:fixed;inset:0;z-index:45;background:#0e0d0c;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;padding:96px 20px 40px">
+    <a href="#work" onClick="{{ closeMenu }}" style="font-family:'Instrument Serif','Cormorant Garamond',serif;font-size:clamp(48px,14vw,80px);line-height:1;padding:6px 0">{{ t.nav.work }}</a>
+    <a href="#services" onClick="{{ closeMenu }}" style="font-family:'Instrument Serif','Cormorant Garamond',serif;font-size:clamp(48px,14vw,80px);line-height:1;padding:6px 0">{{ t.nav.services }}</a>
+    <a href="#about" onClick="{{ closeMenu }}" style="font-family:'Instrument Serif','Cormorant Garamond',serif;font-size:clamp(48px,14vw,80px);line-height:1;padding:6px 0">{{ t.nav.about }}</a>
+    <a href="#contact" onClick="{{ closeMenu }}" style="font-family:'Instrument Serif','Cormorant Garamond',serif;font-style:italic;color:#d39a6e;font-size:clamp(48px,14vw,80px);line-height:1;padding:6px 0">{{ t.nav.contact }}</a>
+    <p style="margin:32px 0 0;border-top:1px solid rgba(236,230,218,.16);padding-top:20px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">{{ t.title }}</p>
+  </nav>
+</sc-if>
+
+<main id="top">
+
+<section data-screen-label="01 Hero" aria-labelledby="hero-title" style="position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:120px clamp(20px,5vw,72px) clamp(28px,4vw,56px)">
+  <div style="position:absolute;top:clamp(88px,12vh,130px);right:clamp(16px,12vw,240px);width:max(135px, min(calc((100svh - clamp(88px,12vh,130px) - 210px) * 9 / 16), 22.5vw, 360px));aspect-ratio:9/16;background:#161412;z-index:1">
+    <image-slot id="hero-reel" shape="rect" fit="cover" placeholder="Showreel loop · vertical 9:16"></image-slot>
+    <div style="position:absolute;top:10px;left:10px;right:10px;display:flex;flex-direction:column;gap:4px;white-space:nowrap;overflow:hidden;pointer-events:none;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;color:#ece6da">
+      <span>{{ t.reel }}</span><span ref="{{ tcRef }}">00:00:00:00</span>
+    </div>
+  </div>
+  <h1 id="hero-title" style="position:relative;z-index:2;margin:0 0 {{ heroLift }};font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-size:{{ heroSize }};line-height:{{ heroLh }};letter-spacing:-.02em;color:#ece6da;display:flex;flex-direction:column;max-width:100%">
+    <span style="display:flex;align-items:center;gap:clamp(12px,1.6vw,24px);font-family:'Hanken Grotesk','Manrope',sans-serif;font-weight:300;font-size:clamp(14px,1.5vw,22px);letter-spacing:.42em;text-transform:uppercase;line-height:1;margin-bottom:clamp(14px,2vw,32px)"><span aria-hidden="true" style="width:clamp(32px,6vw,96px);height:1px;background:#d39a6e"></span>{{ t.h1a }}</span>
+    <span style="display:block;font-style:italic;color:#d39a6e">{{ t.h1b }}</span>
+    <span style="display:block;padding-left:{{ heroIndent }};mix-blend-mode:difference">{{ t.h1c }}</span>
+  </h1>
+  <div style="position:relative;z-index:2;margin-top:clamp(32px,5vw,64px);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px 48px;border-top:1px solid rgba(236,230,218,.16);padding-top:22px">
+    <p style="margin:0;max-width:38ch;font-size:clamp(16px,1.4vw,19px);line-height:1.5;color:#ece6da;text-wrap:pretty">{{ t.heroSub }}</p>
+    <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">{{ t.title }}</p>
+    <a href="#work" style="display:flex;align-items:center;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;transition:gap .5s cubic-bezier(.2,.7,.1,1)" style-hover="gap:28px;color:#d39a6e">{{ t.heroCta }} <span aria-hidden="true">↓</span></a>
+  </div>
+</section>
+
+<section id="work" data-screen-label="02 Selected Work" aria-labelledby="work-title" style="padding:clamp(56px,7vw,112px) clamp(20px,5vw,72px) 0">
+  <div data-reveal="1" style="margin-bottom:clamp(32px,4vw,64px)">
+    <h2 id="work-title" style="margin:0;font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-size:clamp(48px,8vw,128px);line-height:.9;letter-spacing:-.02em">{{ t.work1 }} <span style="font-style:italic;color:#d39a6e">{{ t.work2 }}</span></h2>
+    <nav aria-label="{{ t.work1 }} {{ t.work2 }}" style="margin-top:clamp(40px,5vw,72px)">
+    <ol style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));column-gap:clamp(16px,2.4vw,40px);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase">
+      <li style="border-top:1px solid rgba(236,230,218,.14)"><a href="#desir" style="display:flex;gap:14px;align-items:baseline;padding:16px 0;color:#a39c90;transition:color .4s, padding .5s" style-hover="color:#ece6da;padding-left:8px"><span style="color:#d39a6e">01</span><span>Désir</span></a></li>
+      <li style="border-top:1px solid rgba(236,230,218,.14)"><a href="#ellips" style="display:flex;gap:14px;align-items:baseline;padding:16px 0;color:#a39c90;transition:color .4s, padding .5s" style-hover="color:#ece6da;padding-left:8px"><span style="color:#d39a6e">02</span><span>Ellips</span></a></li>
+      <li style="border-top:1px solid rgba(236,230,218,.14)"><a href="#laneige" style="display:flex;gap:14px;align-items:baseline;padding:16px 0;color:#a39c90;transition:color .4s, padding .5s" style-hover="color:#ece6da;padding-left:8px"><span style="color:#d39a6e">03</span><span>Laneige</span></a></li>
+      <li style="border-top:1px solid rgba(236,230,218,.14)"><a href="#aurora" style="display:flex;gap:14px;align-items:baseline;padding:16px 0;color:#a39c90;transition:color .4s, padding .5s" style-hover="color:#ece6da;padding-left:8px"><span style="color:#d39a6e">04</span><span>Aurora Vitamins</span></a></li>
+      <li style="border-top:1px solid rgba(236,230,218,.14)"><a href="#room505" style="display:flex;gap:14px;align-items:baseline;padding:16px 0;color:#a39c90;transition:color .4s, padding .5s" style-hover="color:#ece6da;padding-left:8px"><span style="color:#d39a6e">05</span><span>Room 505</span></a></li>
+      <li style="border-top:1px solid rgba(236,230,218,.14)"><a href="#cupcake" style="display:flex;gap:14px;align-items:baseline;padding:16px 0;color:#a39c90;transition:color .4s, padding .5s" style-hover="color:#ece6da;padding-left:8px"><span style="color:#d39a6e">06</span><span>Cupcake</span></a></li>
+      <li style="border-top:1px solid rgba(236,230,218,.14)"><a href="#ugc" style="display:flex;gap:14px;align-items:baseline;padding:16px 0;color:#a39c90;transition:color .4s, padding .5s" style-hover="color:#ece6da;padding-left:8px"><span style="color:#d39a6e">07</span><span>{{ t.p.ugc.short }}</span></a></li>
+      <li style="border-top:1px solid rgba(236,230,218,.14)"><a href="#jewelry" style="display:flex;gap:14px;align-items:baseline;padding:16px 0;color:#a39c90;transition:color .4s, padding .5s" style-hover="color:#ece6da;padding-left:8px"><span style="color:#d39a6e">08</span><span>{{ t.p.jewel.short }}</span></a></li>
+    </ol>
+    </nav>
+  </div>
+
+  <article id="desir" aria-labelledby="desir-t" style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:clamp(32px,6vw,96px);padding-bottom:clamp(56px,7vw,112px)">
+    <div data-reveal="1" style="flex:0 1 420px;min-width:min(100%,260px);margin-left:clamp(0px,6vw,120px)">
+      <div style="position:relative;aspect-ratio:9/16;background:#161412">
+        <image-slot id="desir-film" shape="rect" placeholder="DÉSIR · fragrance film · 9:16"></image-slot>
+        <span style="position:absolute;top:12px;left:12px;pointer-events:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:#ece6da">{{ t.film }} · 9:16</span>
+      </div>
+    </div>
+    <div data-reveal="1" style="flex:1 1 340px;min-width:0;padding-bottom:clamp(0px,4vw,64px)">
+      <p style="margin:0 0 20px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">01 — {{ t.p.desir.cat }}</p>
+      <h3 id="desir-t" style="margin:0;font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-size:clamp(72px,13vw,208px);line-height:.82;letter-spacing:-.02em">Désir</h3>
+      <p style="margin:28px 0 36px;max-width:38ch;font-size:17px;line-height:1.6;color:#c9c2b6;text-wrap:pretty">{{ t.p.desir.d }}</p>
+      <a href="#desir" style="display:inline-flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid rgba(236,230,218,.3);padding-bottom:8px;transition:gap .5s" style-hover="gap:26px;color:#d39a6e">{{ t.watchFilm }} <span aria-hidden="true">→</span></a>
+    </div>
+  </article>
+
+  <article id="ellips" aria-labelledby="ellips-t" style="border-top:1px solid rgba(236,230,218,.14);padding:clamp(40px,5vw,64px) 0 clamp(56px,7vw,112px)">
+    <div data-reveal="1" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:16px 40px;margin-bottom:clamp(28px,4vw,56px)">
+      <h3 id="ellips-t" style="margin:0;font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-size:clamp(56px,9vw,144px);line-height:.85;letter-spacing:-.02em">Ellips</h3>
+      <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">02 — {{ t.p.ellips.cat }}</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:clamp(28px,4vw,72px)">
+      <figure data-reveal="1" style="margin:0;flex:1 1 340px;max-width:540px;display:flex;flex-direction:column;gap:14px">
+        <div style="position:relative;aspect-ratio:9/16;background:#161412">
+          <image-slot id="ellips-film" shape="rect" fit="contain" placeholder="Ellips · campaign film · 9:16"></image-slot>
+        </div>
+        <figcaption style="display:flex;justify-content:space-between;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#a39c90"><span>{{ t.campaignFilm }}</span><span>9:16</span></figcaption>
+      </figure>
+      <div style="flex:1 1 380px;min-width:0;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(12px,2vw,32px);align-items:start">
+        <figure data-reveal="1" style="margin:clamp(0px,6vw,110px) 0 0;display:flex;flex-direction:column;gap:12px">
+            <div style="position:relative;aspect-ratio:4/5;background:#161412">
+              <image-slot id="ellips-still-1" shape="rect" fit="contain" placeholder="Ellips · still I · portrait, original ratio"></image-slot>
+            </div>
+            <figcaption style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#a39c90">I — {{ t.still }}</figcaption>
+          </figure>
+        <div style="display:flex;flex-direction:column;gap:clamp(20px,3vw,48px)">
+          <figure data-reveal="1" style="margin:0;display:flex;flex-direction:column;gap:12px">
+            <div style="position:relative;aspect-ratio:4/5;background:#161412">
+              <image-slot id="ellips-still-2" shape="rect" fit="contain" placeholder="Ellips · still II · portrait, original ratio"></image-slot>
+            </div>
+            <figcaption style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#a39c90">II — {{ t.still }}</figcaption>
+          </figure>
+          <figure data-reveal="1" style="margin:0;display:flex;flex-direction:column;gap:12px">
+            <div style="position:relative;aspect-ratio:4/5;background:#161412">
+              <image-slot id="ellips-still-3" shape="rect" fit="contain" placeholder="Ellips · still III · portrait, original ratio"></image-slot>
+            </div>
+            <figcaption style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#a39c90">III — {{ t.still }}</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+    <div data-reveal="1" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-top:clamp(32px,4vw,56px)">
+      <p style="margin:0;max-width:44ch;font-size:17px;line-height:1.6;color:#c9c2b6;text-wrap:pretty">{{ t.p.ellips.d }}</p>
+      <a href="#ellips" style="display:inline-flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid rgba(236,230,218,.3);padding-bottom:8px;transition:gap .5s" style-hover="gap:26px;color:#d39a6e">{{ t.viewCampaign }} <span aria-hidden="true">→</span></a>
+    </div>
+  </article>
+
+  <article id="laneige" aria-labelledby="laneige-t" style="border-top:1px solid rgba(236,230,218,.14);padding:clamp(40px,5vw,64px) 0 clamp(56px,7vw,112px)">
+    <div data-reveal="1" style="display:flex;flex-wrap:wrap-reverse;justify-content:space-between;align-items:baseline;gap:16px 40px;margin-bottom:clamp(28px,4vw,56px)">
+      <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">03 — {{ t.p.laneige.cat }}</p>
+      <h3 id="laneige-t" style="margin:0;font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-style:italic;font-size:clamp(56px,9vw,144px);line-height:.85;letter-spacing:-.02em">Laneige</h3>
+    </div>
+    <div style="display:flex;flex-wrap:wrap-reverse;align-items:flex-end;gap:clamp(28px,4vw,72px)">
+      <div style="flex:1 1 380px;min-width:0;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(12px,2vw,32px);align-items:end">
+        <div style="display:flex;flex-direction:column;gap:clamp(20px,3vw,48px)">
+          <figure data-reveal="1" style="margin:0;display:flex;flex-direction:column;gap:12px">
+            <div style="position:relative;aspect-ratio:4/5;background:#161412">
+              <image-slot id="laneige-still-1" shape="rect" fit="contain" placeholder="Laneige · still I · portrait, original ratio"></image-slot>
+            </div>
+            <figcaption style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#a39c90">I — {{ t.still }}</figcaption>
+          </figure>
+          <figure data-reveal="1" style="margin:0;display:flex;flex-direction:column;gap:12px">
+            <div style="position:relative;aspect-ratio:4/5;background:#161412">
+              <image-slot id="laneige-still-2" shape="rect" fit="contain" placeholder="Laneige · still II · portrait, original ratio"></image-slot>
+            </div>
+            <figcaption style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#a39c90">II — {{ t.still }}</figcaption>
+          </figure>
+        </div>
+        <figure data-reveal="1" style="margin:0 0 clamp(0px,6vw,110px);display:flex;flex-direction:column;gap:12px">
+            <div style="position:relative;aspect-ratio:4/5;background:#161412">
+              <image-slot id="laneige-still-3" shape="rect" fit="contain" placeholder="Laneige · still III · portrait, original ratio"></image-slot>
+            </div>
+            <figcaption style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#a39c90">III — {{ t.still }}</figcaption>
+          </figure>
+      </div>
+      <figure data-reveal="1" style="margin:0;flex:1 1 340px;max-width:540px;display:flex;flex-direction:column;gap:14px">
+        <div style="position:relative;aspect-ratio:9/16;background:#161412">
+          <image-slot id="laneige-film" shape="rect" fit="contain" placeholder="Laneige · campaign film · 9:16"></image-slot>
+        </div>
+        <figcaption style="display:flex;justify-content:space-between;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#a39c90"><span>{{ t.campaignFilm }}</span><span>9:16</span></figcaption>
+      </figure>
+    </div>
+    <div data-reveal="1" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-top:clamp(32px,4vw,56px)">
+      <a href="#laneige" style="display:inline-flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid rgba(236,230,218,.3);padding-bottom:8px;transition:gap .5s" style-hover="gap:26px;color:#d39a6e">{{ t.viewCampaign }} <span aria-hidden="true">→</span></a>
+      <p style="margin:0;max-width:44ch;font-size:17px;line-height:1.6;color:#c9c2b6;text-wrap:pretty">{{ t.p.laneige.d }}</p>
+    </div>
+  </article>
+
+  <article id="aurora" aria-labelledby="aurora-t" style="border-top:1px solid rgba(236,230,218,.14);padding:clamp(40px,5vw,64px) 0 clamp(56px,7vw,112px);display:flex;flex-wrap:wrap;align-items:flex-end;gap:clamp(32px,6vw,96px)">
+    <div data-reveal="1" style="flex:0 1 420px;min-width:min(100%,260px);margin-left:clamp(0px,6vw,120px)">
+      <div style="position:relative;aspect-ratio:9/16;background:#161412">
+        <image-slot id="aurora-film" shape="rect" placeholder="Aurora Vitamins · film · 9:16"></image-slot>
+        <span style="position:absolute;top:12px;left:12px;pointer-events:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:#ece6da">{{ t.film }} · 9:16</span>
+      </div>
+    </div>
+    <div data-reveal="1" style="flex:1 1 340px;min-width:0;padding-bottom:clamp(0px,4vw,64px)">
+      <p style="margin:0 0 20px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">04 — {{ t.p.aurora.cat }}</p>
+      <h3 id="aurora-t" style="margin:0;font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-size:clamp(64px,11vw,176px);line-height:.82;letter-spacing:-.02em">Aurora <span style="font-style:italic">Vitamins</span></h3>
+      <p style="margin:28px 0 36px;max-width:38ch;font-size:17px;line-height:1.6;color:#c9c2b6;text-wrap:pretty">{{ t.p.aurora.d }}</p>
+      <a href="#aurora" style="display:inline-flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid rgba(236,230,218,.3);padding-bottom:8px;transition:gap .5s" style-hover="gap:26px;color:#d39a6e">{{ t.watchFilm }} <span aria-hidden="true">→</span></a>
+    </div>
+  </article>
+</section>
+
+<section id="room505" data-screen-label="03 Room 505" aria-labelledby="room-t" style="background:#070706;padding:clamp(56px,6vw,104px) clamp(20px,5vw,72px)">
+  <div style="max-width:1680px;margin:0 auto">
+    <div data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px 24px;border-top:1px solid rgba(236,230,218,.14);border-bottom:1px solid rgba(236,230,218,.14);padding:16px 0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a39c90">
+      <span>05 — {{ t.p.room.cat }}</span>
+      <span style="text-align:center">{{ t.p.room.genre }}</span>
+      <span style="text-align:right">16:9</span>
+    </div>
+    <div data-reveal="1" style="text-align:center;padding:clamp(32px,4vw,64px) 0 clamp(28px,3vw,48px)">
+      <p style="margin:0 0 clamp(16px,2vw,28px);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a39c90">{{ t.p.room.by }}</p>
+      <h3 id="room-t" style="margin:0;font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-size:clamp(72px,15vw,260px);line-height:.8;letter-spacing:.04em">ROOM <span style="color:#d39a6e;font-style:italic">505</span></h3>
+    </div>
+    <div data-reveal="1" style="position:relative;padding:clamp(10px,1.4vw,22px)">
+      <span aria-hidden="true" style="position:absolute;top:0;left:0;width:22px;height:22px;border-top:1px solid rgba(236,230,218,.5);border-left:1px solid rgba(236,230,218,.5)"></span>
+      <span aria-hidden="true" style="position:absolute;top:0;right:0;width:22px;height:22px;border-top:1px solid rgba(236,230,218,.5);border-right:1px solid rgba(236,230,218,.5)"></span>
+      <span aria-hidden="true" style="position:absolute;bottom:0;left:0;width:22px;height:22px;border-bottom:1px solid rgba(236,230,218,.5);border-left:1px solid rgba(236,230,218,.5)"></span>
+      <span aria-hidden="true" style="position:absolute;bottom:0;right:0;width:22px;height:22px;border-bottom:1px solid rgba(236,230,218,.5);border-right:1px solid rgba(236,230,218,.5)"></span>
+      <div style="position:relative;aspect-ratio:16/9;background:#161412">
+        <image-slot id="room505-film" shape="rect" fit="contain" placeholder="ROOM 505 · short film · 16:9"></image-slot>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:40px clamp(40px,8vw,160px);margin-top:clamp(32px,4vw,64px);align-items:start">
+      <p data-reveal="1" style="margin:0;max-width:30ch;font-family:'Instrument Serif','Cormorant Garamond',serif;font-style:italic;font-size:clamp(26px,2.6vw,40px);line-height:1.25;color:#ece6da;text-wrap:pretty">{{ t.p.room.d }}</p>
+      <div data-reveal="1" style="display:flex;flex-direction:column;gap:36px">
+        <dl style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);gap:14px 32px;font-size:15px;color:#ece6da">
+          <dt style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a39c90">{{ t.p.room.lblDir }}</dt><dd style="margin:0">Ana Sokolova</dd>
+          <dt style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a39c90">{{ t.p.room.lblGenre }}</dt><dd style="margin:0">{{ t.p.room.genre }}</dd>
+          <dt style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a39c90">{{ t.p.room.lblFormat }}</dt><dd style="margin:0">16:9</dd>
+        </dl>
+        <a href="#room505" style="align-self:flex-start;display:inline-flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid rgba(236,230,218,.3);padding-bottom:8px;transition:gap .5s" style-hover="gap:26px;color:#d39a6e">{{ t.watchTheFilm }} <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="04 Cupcake" style="padding:clamp(56px,7vw,112px) clamp(20px,5vw,72px) clamp(48px,6vw,88px)">
+  <article id="cupcake" aria-labelledby="cup-t" style="display:flex;flex-wrap:wrap;align-items:center;gap:clamp(32px,6vw,96px)">
+    <div data-reveal="1" style="flex:1 1 340px;min-width:0;order:1">
+      <p style="margin:0 0 20px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">06 — {{ t.p.cupcake.cat }}</p>
+      <h3 id="cup-t" style="margin:0;font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-style:italic;font-size:clamp(64px,11vw,176px);line-height:.85;letter-spacing:-.02em">Cupcake</h3>
+      <p style="margin:28px 0 36px;max-width:38ch;font-size:17px;line-height:1.6;color:#c9c2b6;text-wrap:pretty">{{ t.p.cupcake.d }}</p>
+      <a href="#cupcake" style="display:inline-flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid rgba(236,230,218,.3);padding-bottom:8px;transition:gap .5s" style-hover="gap:26px;color:#d39a6e">{{ t.watchShort }} <span aria-hidden="true">→</span></a>
+    </div>
+    <div data-reveal="1" style="flex:0 1 380px;min-width:min(100%,240px);order:2;margin-right:clamp(0px,8vw,160px)">
+      <div style="position:relative;aspect-ratio:9/16;background:#161412">
+        <image-slot id="cupcake-film" shape="rect" placeholder="Cupcake · animated short · 9:16"></image-slot>
+      </div>
+    </div>
+  </article>
+  <div style="margin-top:clamp(56px,7vw,112px);border-top:1px solid rgba(236,230,218,.14);padding-top:clamp(40px,5vw,64px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(48px,6vw,96px) clamp(24px,6vw,120px);align-items:start">
+    <article id="ugc" aria-labelledby="ugc-t" data-reveal="1" style="display:flex;flex-direction:column;gap:24px;max-width:420px;margin-left:clamp(0px,4vw,80px)">
+      <div style="position:relative;aspect-ratio:9/16;background:#161412">
+        <image-slot id="ugc-skincare-film" shape="rect" placeholder="AI UGC — Skincare · video · 9:16"></image-slot>
+        <span style="position:absolute;top:12px;left:12px;pointer-events:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em">UGC · 9:16</span>
+      </div>
+      <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">07 — {{ t.p.ugc.cat }}</p>
+      <h3 id="ugc-t" style="margin:0;font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-size:clamp(40px,4.4vw,68px);line-height:.95;letter-spacing:-.015em">{{ t.p.ugc.t1 }}<span style="font-style:italic;color:#d39a6e">{{ t.p.ugc.t2 }}</span></h3>
+      <p style="margin:0;max-width:38ch;font-size:16px;line-height:1.6;color:#c9c2b6;text-wrap:pretty">{{ t.p.ugc.d }}</p>
+      <a href="#ugc" style="align-self:flex-start;display:inline-flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid rgba(236,230,218,.3);padding-bottom:8px;transition:gap .5s" style-hover="gap:26px;color:#d39a6e">{{ t.watchVideo }} <span aria-hidden="true">→</span></a>
+    </article>
+    <article id="jewelry" aria-labelledby="jewel-t" data-reveal="1" style="display:flex;flex-direction:column;gap:24px;max-width:420px;margin-top:clamp(0px,8vw,140px)">
+      <div style="position:relative;aspect-ratio:9/16;background:#161412">
+        <image-slot id="jewelry-film" shape="rect" placeholder="Jewelry Commercial · video · 9:16"></image-slot>
+        <span style="position:absolute;top:12px;left:12px;pointer-events:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em">{{ t.film }} · 9:16</span>
+      </div>
+      <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">08 — {{ t.p.jewel.cat }}</p>
+      <h3 id="jewel-t" style="margin:0;font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-size:clamp(40px,4.4vw,68px);line-height:.95;letter-spacing:-.015em">{{ t.p.jewel.t1 }}<span style="font-style:italic;color:#d39a6e">{{ t.p.jewel.t2 }}</span></h3>
+      <p style="margin:0;max-width:38ch;font-size:16px;line-height:1.6;color:#c9c2b6;text-wrap:pretty">{{ t.p.jewel.d }}</p>
+      <a href="#jewelry" style="align-self:flex-start;display:inline-flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid rgba(236,230,218,.3);padding-bottom:8px;transition:gap .5s" style-hover="gap:26px;color:#d39a6e">{{ t.watchVideo }} <span aria-hidden="true">→</span></a>
+    </article>
+  </div>
+  <div data-reveal="1" style="margin-top:clamp(48px,6vw,88px);border-top:1px solid rgba(236,230,218,.14);padding-top:24px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">
+    <span>{{ t.moreLine }}</span>
+    <a href="#contact" style="color:#ece6da" style-hover="color:#d39a6e">{{ t.fullReel }} →</a>
+  </div>
+</section>
+
+<section id="services" data-screen-label="05 Services" aria-labelledby="services-t" style="background:#161412;padding:clamp(56px,7vw,112px) clamp(20px,5vw,72px)">
+  <div style="display:flex;flex-wrap:wrap;gap:clamp(40px,6vw,120px)">
+    <div data-reveal="1" style="flex:1 1 280px;max-width:520px">
+      <p style="margin:0 0 20px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">{{ t.nav.services }}</p>
+      <h2 id="services-t" style="margin:0 0 32px;font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-size:clamp(44px,6vw,88px);line-height:.95;letter-spacing:-.015em">{{ t.sv1 }}<span style="font-style:italic;color:#d39a6e">{{ t.sv2 }}</span>{{ t.sv3 }}</h2>
+      <a href="#contact" style="display:inline-flex;gap:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid rgba(236,230,218,.3);padding-bottom:8px;transition:gap .5s" style-hover="gap:26px;color:#d39a6e">{{ t.discuss }} <span aria-hidden="true">→</span></a>
+    </div>
+    <div style="flex:2 1 480px;min-width:0">
+      <ul style="list-style:none;margin:0;padding:0;border-bottom:1px solid rgba(236,230,218,.14)">
+        <sc-for list="{{ services }}" as="s" hint-placeholder-count="6">
+          <li data-reveal="1" style="border-top:1px solid rgba(236,230,218,.14)">
+            <h3 style="margin:0;font-weight:inherit;font-size:inherit">
+              <button type="button" id="{{ s.hid }}" aria-expanded="{{ s.open }}" aria-controls="{{ s.pid }}" onClick="{{ s.toggle }}" onKeyDown="{{ s.onKey }}" data-acc="1" style="width:100%;background:transparent;border:0;border-radius:0;color:#ece6da;text-align:left;cursor:pointer;font:inherit;display:grid;grid-template-columns:40px minmax(0,1fr) 28px;gap:8px 16px;padding:28px 0;transition:padding .6s cubic-bezier(.2,.7,.1,1)" style-hover="padding-left:12px" style-focus="outline:1px solid #d39a6e;outline-offset:4px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:#d39a6e;padding-top:12px">{{ s.n }}</span>
+                <span style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px 40px">
+                  <span style="flex:1 1 260px;min-width:0;display:block">
+                    <span style="display:block;font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-size:clamp(28px,3vw,42px);line-height:1.05;hyphens:auto">{{ s.t }}</span>
+                    <span style="display:block;margin-top:10px;max-width:40ch;font-size:16px;line-height:1.55;color:#c9c2b6">{{ s.d }}</span>
+                  </span>
+                  <span style="flex:0 0 auto;display:flex;align-items:baseline;gap:10px;white-space:nowrap">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#a39c90">{{ s.pl }}</span>
+                    <span style="font-family:'Instrument Serif','Cormorant Garamond',serif;font-size:clamp(26px,2.4vw,34px);line-height:1">{{ s.pv }}</span>
+                  </span>
+                </span>
+                <span aria-hidden="true" style="position:relative;align-self:center;justify-self:end;width:16px;height:16px">
+                  <span style="position:absolute;left:0;right:0;top:50%;height:1px;background:#d39a6e"></span>
+                  <span style="position:absolute;top:0;bottom:0;left:50%;width:1px;background:#d39a6e;transition:transform .5s cubic-bezier(.2,.7,.1,1);transform:{{ s.vbar }}"></span>
+                </span>
+              </button>
+            </h3>
+            <div id="{{ s.pid }}" role="region" aria-labelledby="{{ s.hid }}" inert="{{ s.inert }}" style="display:grid;grid-template-rows:{{ s.rows }};opacity:{{ s.op }};transition:grid-template-rows .6s cubic-bezier(.2,.7,.1,1), opacity .5s ease">
+              <div style="overflow:hidden;min-height:0">
+                <div style="padding:0 0 36px 56px;display:flex;flex-direction:column;gap:28px">
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));border-top:1px solid rgba(236,230,218,.14)">
+                    <sc-for list="{{ s.opts }}" as="o" hint-placeholder-count="2">
+                      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px 20px;flex-wrap:wrap;padding:20px 24px 20px 0;border-bottom:1px solid rgba(236,230,218,.14)">
+                        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#a39c90;max-width:30ch;line-height:1.6">{{ o.l }}</span>
+                        <span style="display:flex;align-items:baseline;gap:8px;white-space:nowrap"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#a39c90">{{ o.pl }}</span><span style="font-family:'Instrument Serif','Cormorant Garamond',serif;font-size:28px;line-height:1;color:#ece6da">{{ o.pv }}</span></span>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <p style="margin:0;max-width:62ch;font-size:15px;line-height:1.65;color:#c9c2b6;text-wrap:pretty">{{ t.scopeNote }}</p>
+                  <a href="#contact" onClick="{{ s.pick }}" tabindex="{{ s.tab }}" style="align-self:flex-start;display:inline-flex;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#d39a6e;border-bottom:1px solid rgba(211,154,110,.4);padding-bottom:6px;transition:gap .5s" style-hover="gap:22px;color:#ece6da">{{ t.discussYours }} <span aria-hidden="true">→</span></a>
+                </div>
+              </div>
+            </div>
+          </li>
+        </sc-for>
+      </ul>
+      <p data-reveal="1" style="margin:24px 0 0;max-width:60ch;font-size:14px;line-height:1.6;color:#a39c90">{{ t.priceNote }}</p>
+    </div>
+  </div>
+</section>
+
+<section id="about" data-screen-label="06 About" aria-labelledby="about-t" style="padding:clamp(56px,7vw,112px) clamp(20px,5vw,72px)">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:clamp(40px,6vw,112px)">
+    <div data-reveal="1" style="flex:0 1 440px;min-width:min(100%,260px)">
+      <div style="position:relative;aspect-ratio:4/5;background:#161412">
+        <image-slot id="about-portrait" shape="rect" placeholder="Portrait of Ana · 4:5"></image-slot>
+      </div>
+    </div>
+    <div data-reveal="1" style="flex:1 1 400px;min-width:0">
+      <p style="margin:0 0 24px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">{{ t.nav.about }}</p>
+      <h2 id="about-t" style="margin:0;font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-size:clamp(32px,3.8vw,58px);line-height:1.08;letter-spacing:-.01em;text-wrap:pretty">{{ t.ab1 }}<span style="font-style:italic;color:#d39a6e">{{ t.ab2 }}</span></h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:24px 48px;margin-top:48px">
+        <p style="margin:0;font-size:16px;line-height:1.65;color:#c9c2b6;text-wrap:pretty">{{ t.abP1 }}</p>
+        <p style="margin:0;font-size:16px;line-height:1.65;color:#c9c2b6;text-wrap:pretty">{{ t.abP2 }}</p>
+      </div>
+      <p style="margin:40px 0 0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90;line-height:2">{{ t.disciplines }}</p>
+    </div>
+  </div>
+</section>
+
+<section id="contact" data-screen-label="07 Contact" aria-labelledby="contact-t" style="border-top:1px solid rgba(236,230,218,.14);padding:clamp(56px,7vw,112px) clamp(20px,5vw,72px) clamp(48px,6vw,80px)">
+  <h2 id="contact-t" data-reveal="1" style="margin:0;max-width:14ch;font-family:'Instrument Serif','Cormorant Garamond',serif;font-weight:400;font-size:clamp(52px,10vw,168px);line-height:.88;letter-spacing:-.02em">{{ t.c1 }}<span style="font-style:italic;color:#d39a6e">{{ t.c2 }}</span>{{ t.c3 }}</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:clamp(40px,6vw,112px);margin-top:clamp(48px,7vw,96px)">
+    <p data-reveal="1" style="flex:1 1 240px;margin:0;font-size:clamp(18px,1.6vw,22px);line-height:1.5;color:#ece6da;max-width:28ch">{{ t.contactSub }}</p>
+    <form data-reveal="1" onSubmit="{{ onSubmit }}" aria-describedby="form-status" style="flex:2 1 480px;min-width:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:36px 40px">
+      <label style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">{{ t.f.name }}</span>
+        <input name="name" autocomplete="name" aria-required="true" value="{{ f.name }}" onChange="{{ onField }}" style="background:transparent;border:0;border-bottom:1px solid rgba(236,230,218,.3);color:#ece6da;font-size:20px;padding:8px 0 12px;outline:none;border-radius:0;width:100%" style-focus="border-bottom-color:#d39a6e">
+        <sc-if value="{{ e.name }}" hint-placeholder-val="{{ false }}"><span role="alert" style="font-size:13px;color:#e8a27c">{{ e.name }}</span></sc-if>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">{{ t.f.email }}</span>
+        <input name="email" type="email" autocomplete="email" aria-required="true" value="{{ f.email }}" onChange="{{ onField }}" style="background:transparent;border:0;border-bottom:1px solid rgba(236,230,218,.3);color:#ece6da;font-size:20px;padding:8px 0 12px;outline:none;border-radius:0;width:100%" style-focus="border-bottom-color:#d39a6e">
+        <sc-if value="{{ e.email }}" hint-placeholder-val="{{ false }}"><span role="alert" style="font-size:13px;color:#e8a27c">{{ e.email }}</span></sc-if>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:10px;grid-column:1/-1">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">{{ t.f.type }}</span>
+        <select name="type" aria-required="true" value="{{ f.type }}" onChange="{{ onField }}" style="background:transparent;border:0;border-bottom:1px solid rgba(236,230,218,.3);color:#ece6da;font-size:20px;padding:8px 0 12px;outline:none;border-radius:0;appearance:none;cursor:pointer;width:100%;text-overflow:ellipsis" style-focus="border-bottom-color:#d39a6e">
+          <option value="">{{ t.f.select }}</option>
+          <sc-for list="{{ types }}" as="ty" hint-placeholder-count="0"><option value="{{ ty.v }}">{{ ty.l }}</option></sc-for>
+        </select>
+        <sc-if value="{{ e.type }}" hint-placeholder-val="{{ false }}"><span role="alert" style="font-size:13px;color:#e8a27c">{{ e.type }}</span></sc-if>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:10px;grid-column:1/-1">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">{{ t.f.brief }}</span>
+        <textarea name="brief" rows="4" aria-required="true" value="{{ f.brief }}" onChange="{{ onField }}" placeholder="{{ t.f.briefPh }}" style="background:transparent;border:0;border-bottom:1px solid rgba(236,230,218,.3);color:#ece6da;font-size:20px;line-height:1.5;padding:8px 0 12px;outline:none;resize:vertical;border-radius:0;width:100%" style-focus="border-bottom-color:#d39a6e"></textarea>
+        <sc-if value="{{ e.brief }}" hint-placeholder-val="{{ false }}"><span role="alert" style="font-size:13px;color:#e8a27c">{{ e.brief }}</span></sc-if>
+      </label>
+      <input name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" value="{{ f._gotcha }}" onChange="{{ onField }}" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <div style="grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:20px 32px">
+        <button type="submit" disabled="{{ sending }}" style="background:#ece6da;color:#0e0d0c;border:0;border-radius:0;padding:22px 40px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;cursor:pointer;transition:background .4s, letter-spacing .5s" style-hover="background:#d39a6e;letter-spacing:.3em">{{ submitLabel }}</button>
+        <p id="form-status" role="status" aria-live="polite" style="margin:0;font-size:15px;line-height:1.5;max-width:44ch;color:{{ statusColor }}">{{ statusText }}</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer style="padding:28px clamp(20px,5vw,72px);border-top:1px solid rgba(236,230,218,.14);display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#a39c90">
+  <span>© 2026 {{ t.name }}</span>
+  <span>{{ t.title }}</span>
+  <a href="#top" style="color:#a39c90" style-hover="color:#ece6da">{{ t.top }} ↑</a>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;formEndpoint&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contact form&quot;},&quot;navBehavior&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto-hide&quot;,&quot;fixed&quot;],&quot;default&quot;:&quot;auto-hide&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;grain&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Motion&quot;}}">
+class Component extends DCLogic {
+  // Central translation dictionary — edit copy here.
+  static I18N = {
+    en: {
+      name: 'Ana Sokolova',
+      title: 'AI Visual Creator & Creative Director',
+      metaTitle: 'Ana Sokolova — AI Visual Creator & Creative Director',
+      metaDesc: 'Ana Sokolova is an AI visual creator and creative director producing commercial videos, product photography, visual campaigns, animated stories and cinematic content for brands.',
+      homeLabel: 'Ana Sokolova — home', navLabel: 'Primary', langLabel: 'Language',
+      menu: 'Menu', close: 'Close',
+      nav: { work: 'Work', services: 'Services', about: 'About', contact: 'Contact' },
+      reel: 'SHOWREEL ’26',
+      h1a: 'Imagined', h1b: 'beyond', h1c: 'reality.',
+      heroSub: 'Commercial video, product photography and complete visual campaigns — created with AI, directed with intent.',
+      heroCta: 'Explore Work',
+      work1: 'Selected', work2: 'work',
+      film: 'FILM', watchFilm: 'Watch film', viewCampaign: 'View campaign', watchTheFilm: 'Watch the film', watchShort: 'Watch short',
+      p: {
+        desir: { cat: 'Luxury fragrance commercial', d: 'A slow, perfumed study of longing. Silk, low light and skin — a fashion-inspired fragrance film built on atmosphere rather than explanation.' },
+        ellips: { cat: 'Haircare campaign · Video + 3 stills', d: 'Movement as the product. One visual language — sculpted light, glossy motion, a restrained palette — carried from the video into a set of campaign stills.' },
+        laneige: { cat: 'Skincare campaign · Video + 3 stills', d: 'Water, glass and dewy skin. A cool, luminous campaign where every still could be a frame lifted from the video.' },
+        aurora: { cat: 'Lifestyle commercial', d: 'Morning light, open windows, unhurried rituals. A warm lifestyle film that sells a feeling before it shows a bottle.' },
+        room: { cat: 'Short film', genre: 'Psychological mystery', by: 'A film by Ana Sokolova', lblDir: 'Written & directed', lblGenre: 'Genre', lblFormat: 'Format', d: 'A hotel room that shouldn’t exist, and a guest who can’t remember checking in. A narrative short about memory, doubt and the door you keep returning to.' },
+        cupcake: { cat: 'Animated short', d: 'A small, sweet and slightly absurd story with characters who feel like they’ve always existed. Proof that the same eye can shape a perfume film and a fairy tale.' },
+        ugc: { short: 'AI UGC', t1: 'AI UGC — ', t2: 'Skincare', cat: 'AI UGC / Beauty content', d: 'A realistic skincare demonstration with virtual talent — natural product interactions and the easy, lived-in feel of lifestyle advertising.' },
+        jewel: { short: 'Jewelry', t1: 'Jewelry ', t2: 'Commercial', cat: 'AI commercial / Jewelry', d: 'A refined study of detail: metal, stone and light, told through slow, cinematic close-ups.' }
+      },
+      moreLine: 'More work available on request', fullReel: 'Request the full portfolio', watchVideo: 'Watch video', campaignFilm: 'Campaign film', still: 'Campaign still',
+      sv1: 'What we can ', sv2: 'make', sv3: ' together.', discuss: 'Discuss a project',
+      inquire: 'Inquire about',
+      services: [
+        { k: 'photo', t: 'AI Product Photography', d: 'Art-directed product imagery and editorial visuals.', pl: 'From', pv: '$15', opts: [{ l: '1 image', pl: 'From', pv: '$15' }, { l: '3 images', pl: 'From', pv: '$35' }, { l: '5 images', pl: 'From', pv: '$50' }] },
+        { k: 'video', t: 'AI Commercial Videos', d: 'Cinematic product advertising and short-form brand content.', pl: 'From', pv: '$150', opts: [{ l: '15 seconds', pl: 'From', pv: '$150' }, { l: '30 seconds', pl: 'From', pv: '$250' }] },
+        { k: 'ugc', t: 'AI UGC Content', d: 'Virtual talent and product-focused social content.', pl: 'From', pv: '$180', opts: [{ l: '15 seconds', pl: 'From', pv: '$180' }, { l: '30 seconds', pl: 'From', pv: '$300' }] },
+        { k: 'campaign', t: 'AI Brand Campaigns', d: 'Cohesive campaigns that combine video and still imagery.', pl: 'From', pv: '$250', opts: [{ l: '15-second video + supporting imagery', pl: 'From', pv: '$250' }, { l: '30-second video + supporting imagery', pl: 'From', pv: '$400' }] },
+        { k: 'animation', t: 'AI Animation & Stories', d: 'Imaginative animated stories, characters and playful branded films.', pl: 'From', pv: '$250', opts: [{ l: '15 seconds', pl: 'From', pv: '$250' }, { l: '30 seconds', pl: 'From', pv: '$400' }] },
+        { k: 'story', t: 'Cinematic Storytelling', d: 'Narrative-driven films and cinematic visual projects.', pl: 'Custom quote', pv: '', opts: [{ l: '15 seconds', pl: '', pv: 'Custom quote' }, { l: '30 seconds', pl: '', pv: 'Custom quote' }] }
+      ],
+      other: 'Something else',
+      scopeNote: 'Every project starts with your brief. Starting prices cover a simple concept; your final quote depends on the number of scenes, visual and animation complexity, voiceover or lip-sync requirements, and requested deliverables. We’ll agree on the scope and price before production begins.', discussYours: 'Discuss your project',
+      priceNote: 'Starting prices are indicative. Final quotes depend on project scope and creative requirements.',
+      ab1: 'I’m Ana, an independent AI visual creator and creative director building cinematic worlds, distinctive campaigns and ', ab2: 'images that stay with you.',
+      abP1: 'Every project starts with a point of view, not a prompt. I art-direct, write and edit — shaping mood, light, casting and rhythm across video and stills — and treat AI as the camera, never the author.',
+      abP2: 'My work spans commercial video, product photography, complete campaigns, animation and cinematic stories. What connects it is taste, restraint and a love of images that hold attention a moment longer.',
+      disciplines: 'Art direction · Video · Photography · Campaigns · Animation',
+      c1: 'Have something ', c2: 'extraordinary', c3: ' in mind?',
+      contactSub: 'Let’s bring your next idea to life. Tell me a little about it — I reply personally.',
+      f: { name: 'Name', email: 'Email', type: 'Project type', select: 'Select one', brief: 'The idea', briefPh: 'Brand, goal, timing — whatever you know so far.' },
+      err: { name: 'Please add your name.', emailReq: 'Please add your email.', emailBad: 'That email doesn’t look right.', type: 'Choose the closest project type.', brief: 'A sentence or two helps — at least 20 characters.' },
+      status: { idle: '', invalid: 'Please check the fields above.', noEndpoint: 'Inquiries aren’t connected yet — no delivery endpoint is configured. Nothing was sent.', sending: 'Sending…', sent: 'Thank you — your message is with me. I’ll reply within a few days.', failed: 'Something went wrong and your message wasn’t sent. Please try again in a moment.' },
+      submit: 'Start a Project', sendingBtn: 'Sending…', subject: 'New inquiry',
+      top: 'Back to top'
+    },
+    uk: {
+      name: 'Ана Соколова',
+      title: 'AI-креаторка та креативна директорка',
+      metaTitle: 'Ана Соколова — AI-креаторка та креативна директорка',
+      metaDesc: 'Ана Соколова — AI-креаторка та креативна директорка. Рекламні відео, предметна фотографія, візуальні кампанії, анімаційні історії та кінематографічний контент для брендів.',
+      homeLabel: 'Ана Соколова — на головну', navLabel: 'Головне меню', langLabel: 'Мова',
+      menu: 'Меню', close: 'Закрити',
+      nav: { work: 'Роботи', services: 'Послуги', about: 'Про мене', contact: 'Контакти' },
+      reel: 'ШОУРІЛ ’26',
+      h1a: 'Уявлене', h1b: 'за межами', h1c: 'реальності.',
+      heroSub: 'Рекламні відео, предметна фотографія та цілісні візуальні кампанії — створені за допомогою AI, з чітким творчим баченням.',
+      heroCta: 'Дивитися роботи',
+      work1: 'Вибрані', work2: 'роботи',
+      film: 'ВІДЕО', watchFilm: 'Дивитися відео', viewCampaign: 'Переглянути кампанію', watchTheFilm: 'Дивитися фільм', watchShort: 'Дивитися мультфільм',
+      p: {
+        desir: { cat: 'Реклама люксового аромату', d: 'Повільна, напоєна ароматом історія про жагу. Шовк, приглушене світло й шкіра — натхненний модою фільм, де атмосфера важить більше за пояснення.' },
+        ellips: { cat: 'Кампанія для догляду за волоссям · Відео + 3 кадри', d: 'Рух як головний герой. Єдина візуальна мова — скульптурне світло, глянцева пластика, стримана палітра — переходить із відео в серію рекламних кадрів.' },
+        laneige: { cat: 'Кампанія для догляду за шкірою · Відео + 3 кадри', d: 'Вода, скло й сяйна шкіра. Прохолодна, світла кампанія, де кожен кадр міг би бути вихоплений із відео.' },
+        aurora: { cat: 'Лайфстайл-реклама', d: 'Ранкове світло, відчинені вікна, неквапливі ритуали. Теплий лайфстайл-ролик, що спершу дарує відчуття, а вже потім показує продукт.' },
+        room: { cat: 'Короткометражний фільм', genre: 'Психологічна містика', by: 'Фільм Ани Соколової', lblDir: 'Сценарій і режисура', lblGenre: 'Жанр', lblFormat: 'Формат', d: 'Готельний номер, якого не мало б існувати, і гість, який не пам’ятає, як заселився. Наративна історія про пам’ять, сумнів і двері, до яких постійно повертаєшся.' },
+        cupcake: { cat: 'Анімаційна історія', d: 'Маленька, солодка й трохи абсурдна історія з персонажами, які ніби існували завжди. Доказ того, що один погляд здатен створити і парфумерний фільм, і казку.' },
+        ugc: { short: 'AI UGC', t1: 'AI UGC — ', t2: 'догляд за шкірою', cat: 'AI UGC / Б’юті-контент', d: 'Реалістична демонстрація догляду за шкірою з віртуальною моделлю — природна взаємодія з продуктом і невимушена атмосфера лайфстайл-реклами.' },
+        jewel: { short: 'Ювелірна реклама', t1: 'Ювелірна ', t2: 'реклама', cat: 'AI-реклама / Ювелірні прикраси', d: 'Витончене дослідження деталей: метал, камінь і світло в повільних кінематографічних великих планах.' }
+      },
+      moreLine: 'Більше робіт — за запитом', fullReel: 'Запросити повне портфоліо', watchVideo: 'Дивитися відео', campaignFilm: 'Відео кампанії', still: 'Кадр кампанії',
+      sv1: 'Що ми можемо ', sv2: 'створити', sv3: ' разом.', discuss: 'Обговорити проєкт',
+      inquire: 'Надіслати запит щодо послуги',
+      services: [
+        { k: 'photo', t: 'AI-предметна фотографія', d: 'Предметні зйомки з арт-дирекшном та редакційні візуали.', pl: 'Від', pv: '$15', opts: [{ l: '1 зображення', pl: 'Від', pv: '$15' }, { l: '3 зображення', pl: 'Від', pv: '$35' }, { l: '5 зображень', pl: 'Від', pv: '$50' }] },
+        { k: 'video', t: 'AI-рекламні відео', d: 'Кінематографічна реклама продуктів і короткий брендовий контент.', pl: 'Від', pv: '$150', opts: [{ l: '15 секунд', pl: 'Від', pv: '$150' }, { l: '30 секунд', pl: 'Від', pv: '$250' }] },
+        { k: 'ugc', t: 'AI UGC-контент', d: 'Віртуальні амбасадори та контент для соцмереж із фокусом на продукті.', pl: 'Від', pv: '$180', opts: [{ l: '15 секунд', pl: 'Від', pv: '$180' }, { l: '30 секунд', pl: 'Від', pv: '$300' }] },
+        { k: 'campaign', t: 'AI-кампанії для брендів', d: 'Цілісні кампанії, що поєднують відео та фотографію.', pl: 'Від', pv: '$250', opts: [{ l: '15-секундне відео + супровідні зображення', pl: 'Від', pv: '$250' }, { l: '30-секундне відео + супровідні зображення', pl: 'Від', pv: '$400' }] },
+        { k: 'animation', t: 'AI-анімація та історії', d: 'Анімовані історії, персонажі та грайливі брендові фільми.', pl: 'Від', pv: '$250', opts: [{ l: '15 секунд', pl: 'Від', pv: '$250' }, { l: '30 секунд', pl: 'Від', pv: '$400' }] },
+        { k: 'story', t: 'Кінематографічний сторітелінг', d: 'Наративні фільми та кінематографічні візуальні проєкти.', pl: 'Індивідуальний розрахунок', pv: '', opts: [{ l: '15 секунд', pl: '', pv: 'За запитом' }, { l: '30 секунд', pl: '', pv: 'За запитом' }] }
+      ],
+      other: 'Інше',
+      scopeNote: 'Кожен проєкт починається з вашого брифу. Стартові ціни розраховані на простий концепт; остаточна вартість залежить від кількості сцен, складності візуалу та анімації, потреби в озвученні чи ліпсинку, а також від переліку матеріалів, які ви хочете отримати. Обсяг робіт і ціну ми погоджуємо до початку виробництва.', discussYours: 'Обговорити ваш проєкт',
+      priceNote: 'Вказані ціни є орієнтовними. Остаточна вартість залежить від обсягу проєкту та творчих завдань.',
+      ab1: 'Я Ана — незалежна AI-креаторка та креативна директорка. Створюю кінематографічні світи, виразні кампанії та ', ab2: 'образи, що залишаються з вами.',
+      abP1: 'Кожен проєкт починається з бачення, а не з промпту. Я відповідаю за арт-дирекшн, сценарій і монтаж — вибудовую настрій, світло, кастинг і ритм у відео та фото, — а AI для мене камера, а не автор.',
+      abP2: 'Мої роботи — це рекламні відео, предметна фотографія, цілісні кампанії, анімація та кінематографічні історії. Їх об’єднують смак, стриманість і любов до образів, що утримують увагу трохи довше.',
+      disciplines: 'Арт-дирекшн · Відео · Фотографія · Кампанії · Анімація',
+      c1: 'Задумали щось ', c2: 'неймовірне', c3: '?',
+      contactSub: 'Втілімо вашу наступну ідею в життя. Розкажіть трохи про неї — я відповідаю особисто.',
+      f: { name: 'Ім’я', email: 'Email', type: 'Тип проєкту', select: 'Оберіть варіант', brief: 'Ідея', briefPh: 'Бренд, мета, терміни — усе, що вже відомо.' },
+      err: { name: 'Вкажіть, будь ласка, ваше ім’я.', emailReq: 'Вкажіть, будь ласка, email.', emailBad: 'Схоже, email введено з помилкою.', type: 'Оберіть найближчий тип проєкту.', brief: 'Кілька речень дуже допоможуть — щонайменше 20 символів.' },
+      status: { idle: '', invalid: 'Перевірте, будь ласка, поля вище.', noEndpoint: 'Форму ще не підключено — адресу доставки не налаштовано. Повідомлення не надіслано.', sending: 'Надсилання…', sent: 'Дякую — ваше повідомлення отримано. Я відповім протягом кількох днів.', failed: 'Щось пішло не так, і повідомлення не надіслано. Спробуйте, будь ласка, ще раз за хвилину.' },
+      submit: 'Почати проєкт', sendingBtn: 'Надсилання…', subject: 'Новий запит',
+      top: 'Нагору'
+    }
+  };
+
+  state = { lang: 'en', hidden: false, scrolled: false, narrow: false, menuOpen: false, f: { name: '', email: '', type: '', brief: '', _gotcha: '' }, e: {}, status: 'idle' };
+  tcRef = React.createRef();
+
+  setLang(lang) {
+    try { localStorage.setItem('anasokolova.lang', lang); } catch (_) {}
+    this.setState({ lang }, () => this.applyDocLang());
+  }
+
+  setMenu(open) {
+    document.body.style.overflow = open ? 'hidden' : '';
+    this.setState({ menuOpen: open, hidden: false });
+  }
+
+  applyDocLang() {
+    const t = Component.I18N[this.state.lang];
+    document.documentElement.lang = this.state.lang === 'uk' ? 'uk' : 'en';
+    document.title = t.metaTitle;
+    const m = document.querySelector('meta[name="description"]');
+    if (m) m.setAttribute('content', t.metaDesc);
+  }
+
+  componentDidMount() {
+    let saved = null;
+    try { saved = localStorage.getItem('anasokolova.lang'); } catch (_) {}
+    if (saved === 'uk' || saved === 'en') this.setState({ lang: saved }, () => this.applyDocLang());
+    else this.applyDocLang();
+    this.onStorage = ev => { if (ev.key === 'anasokolova.lang' && (ev.newValue === 'en' || ev.newValue === 'uk')) this.setState({ lang: ev.newValue }); };
+    window.addEventListener('storage', this.onStorage);
+
+    this.mq = window.matchMedia('(max-width: 760px)');
+    this.onMq = () => { if (!this.mq.matches && this.state.menuOpen) this.setMenu(false); this.setState({ narrow: this.mq.matches }); };
+    this.onMq();
+    this.mq.addEventListener('change', this.onMq);
+    this.onKey = ev => { if (ev.key === 'Escape' && this.state.menuOpen) this.setMenu(false); };
+    window.addEventListener('keydown', this.onKey);
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let lastY = window.scrollY;
+    this.onScroll = () => {
+      const y = window.scrollY;
+      const hidden = (this.props.navBehavior ?? 'auto-hide') === 'auto-hide' && y > 160 && y > lastY && !this.state.menuOpen;
+      const scrolled = y > 40;
+      if (hidden !== this.state.hidden || scrolled !== this.state.scrolled) this.setState({ hidden, scrolled });
+      lastY = y;
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+
+    const start = performance.now();
+    const pad = n => String(n).padStart(2, '0');
+    this.tc = setInterval(() => {
+      if (!this.tcRef.current) return;
+      const f = Math.floor((performance.now() - start) / (1000 / 24));
+      const s = Math.floor(f / 24);
+      this.tcRef.current.textContent = `00:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}:${pad(f % 24)}`;
+    }, reduce ? 1000 : 1000 / 24);
+
+    if (reduce || !('IntersectionObserver' in window)) return;
+    this.io = new IntersectionObserver(entries => entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      en.target.style.opacity = '1';
+      en.target.style.transform = 'none';
+      this.io.unobserve(en.target);
+    }), { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('[data-reveal]').forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight) return;
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(28px)';
+      el.style.transition = 'opacity 1.2s cubic-bezier(.2,.7,.1,1), transform 1.2s cubic-bezier(.2,.7,.1,1)';
+      this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('storage', this.onStorage);
+    window.removeEventListener('keydown', this.onKey);
+    this.mq && this.mq.removeEventListener('change', this.onMq);
+    clearInterval(this.tc);
+    this.io && this.io.disconnect();
+    document.body.style.overflow = '';
+  }
+
+  validate(f) {
+    const e = {};
+    if (!f.name.trim()) e.name = 'name';
+    if (!f.email.trim()) e.email = 'emailReq';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim())) e.email = 'emailBad';
+    if (!f.type) e.type = 'type';
+    if (f.brief.trim().length < 20) e.brief = 'brief';
+    return e;
+  }
+
+  onField = ev => {
+    const { name, value } = ev.target;
+    this.setState(s => {
+      const e = { ...s.e };
+      delete e[name];
+      return { f: { ...s.f, [name]: value }, e, status: s.status === 'sent' ? 'idle' : s.status };
+    });
+  };
+
+  onSubmit = async ev => {
+    ev.preventDefault();
+    const { f, lang } = this.state;
+    const t = Component.I18N[lang];
+    const e = this.validate(f);
+    if (Object.keys(e).length) { this.setState({ e, status: 'invalid' }); return; }
+    if (f._gotcha) return;
+    const endpoint = (this.props.formEndpoint ?? '').trim();
+    if (!endpoint) { this.setState({ status: 'noEndpoint' }); return; }
+    this.setState({ status: 'sending' });
+    const typeLabel = (Component.I18N.en.services.find(s => s.k === f.type) || {}).t || Component.I18N.en.other;
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ name: f.name.trim(), email: f.email.trim(), projectType: typeLabel, message: f.brief.trim(), language: lang, _subject: `${t.subject} — ${typeLabel}` })
+      });
+      if (!res.ok) throw new Error(res.status);
+      this.setState({ status: 'sent', f: { name: '', email: '', type: '', brief: '', _gotcha: '' }, e: {} });
+    } catch (err) {
+      this.setState({ status: 'failed' });
+    }
+  };
+
+  accKey = ev => {
+    const btns = Array.from(document.querySelectorAll('button[data-acc]'));
+    const i = btns.indexOf(ev.currentTarget); let n = -1;
+    if (ev.key === 'ArrowDown') n = (i + 1) % btns.length;
+    else if (ev.key === 'ArrowUp') n = (i - 1 + btns.length) % btns.length;
+    else if (ev.key === 'Home') n = 0;
+    else if (ev.key === 'End') n = btns.length - 1;
+    if (n < 0) return;
+    ev.preventDefault(); btns[n].focus();
+  };
+
+  renderVals() {
+    const { lang, hidden, scrolled, status, narrow, menuOpen } = this.state;
+    const t = Component.I18N[lang];
+    const e = {};
+    Object.keys(this.state.e).forEach(k => { e[k] = t.err[this.state.e[k]]; });
+    return {
+      t,
+      grain: this.props.grain ?? true,
+      tcRef: this.tcRef,
+      isEn: lang === 'en', isUa: lang === 'uk',
+      enColor: lang === 'en' ? '#ece6da' : '#7d776e',
+      uaColor: lang === 'uk' ? '#ece6da' : '#7d776e',
+      setEn: () => this.setLang('en'), setUa: () => this.setLang('uk'),
+      isWide: !narrow, isNarrow: narrow,
+      menuOpen, showMenu: narrow && menuOpen,
+      menuLabel: menuOpen ? t.close : t.menu,
+      toggleMenu: () => this.setMenu(!this.state.menuOpen),
+      closeMenu: () => this.setMenu(false),
+      heroSize: lang === 'uk' ? 'clamp(46px,8.6vw,148px)' : 'clamp(64px,14.5vw,240px)',
+      heroLh: lang === 'uk' ? '1.04' : '.9',
+      heroLift: lang === 'uk' ? 'clamp(0px,12vh,160px)' : '0px',
+      heroIndent: lang === 'uk' ? 'clamp(0px,6vw,120px)' : 'clamp(0px,18vw,340px)',
+      navTransform: hidden ? 'translateY(-100%)' : 'none',
+      navBg: scrolled && !menuOpen ? 'rgba(14,13,12,.82)' : 'transparent',
+      services: t.services.map((s, i) => ({
+        ...s, n: String(i + 1).padStart(2, '0'),
+        aria: `${t.inquire}: ${s.t} — ${s.pv ? s.pl + ' ' + s.pv : s.pl}`,
+        hid: 'svc-h-' + s.k, pid: 'svc-p-' + s.k,
+        open: this.state.openSvc === s.k ? 'true' : 'false',
+        inert: this.state.openSvc === s.k ? undefined : '',
+        tab: this.state.openSvc === s.k ? '0' : '-1',
+        rows: this.state.openSvc === s.k ? '1fr' : '0fr',
+        op: this.state.openSvc === s.k ? '1' : '0',
+        vbar: this.state.openSvc === s.k ? 'scaleY(0)' : 'scaleY(1)',
+        opts: s.opts.map(o => ({ ...o })),
+        toggle: () => this.setState(st => ({ openSvc: st.openSvc === s.k ? null : s.k })),
+        onKey: this.accKey,
+        pick: () => this.setState(st => { const er = { ...st.e }; delete er.type; return { f: { ...st.f, type: s.k }, e: er }; })
+      })),
+      types: [...t.services.map(s => ({ v: s.k, l: s.t })), { v: 'other', l: t.other }],
+      f: this.state.f,
+      e,
+      onField: this.onField,
+      onSubmit: this.onSubmit,
+      sending: status === 'sending',
+      submitLabel: status === 'sending' ? t.sendingBtn : t.submit,
+      statusText: t.status[status] || '',
+      statusColor: status === 'invalid' || status === 'noEndpoint' || status === 'failed' ? '#e8a27c' : status === 'sent' ? '#ece6da' : '#a39c90'
+    };
+  }
+}
+</script>
+</body>
+</html>
