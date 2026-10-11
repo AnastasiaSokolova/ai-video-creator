@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { useUI } from '../context.js';
-import { SHOWREEL } from '../data/projects.js';
+import { HERO_VIDEO } from '../data/projects.js';
 import { prefersReducedMotion, useVideoPreview } from '../hooks/media.js';
 import PreviewMedia from './PreviewMedia.jsx';
 
 const pad = (n) => String(n).padStart(2, '0');
 
-// Running 24fps timecode over the showreel, as in the design
+// Running 24fps timecode over the hero video, as in the design
 function useTimecode(ref) {
   useEffect(() => {
     const start = performance.now();
@@ -29,7 +29,7 @@ export default function Hero() {
   return (
     <section className={`hero lang-${lang}`} aria-labelledby="hero-title">
       <div className="hero-reel frame">
-        <PreviewMedia film={SHOWREEL} playing={playing} videoProps={videoProps} preload="auto" />
+        <PreviewMedia film={HERO_VIDEO} playing={playing} videoProps={videoProps} preload="auto" />
         <div className="hero-reel-meta mono" aria-hidden="true">
           <span>{t.reel}</span><span ref={tcRef}>00:00:00:00</span>
         </div>

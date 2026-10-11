@@ -5,7 +5,8 @@ const BASE = import.meta.env.BASE_URL;
 
 export const CONTACT_EMAIL = 'a.sokolova4work@gmail.com';
 export const FORM_ENDPOINT = `https://formsubmit.co/ajax/${CONTACT_EMAIL}`;
-export const SHOWREEL = { src: BASE + 'videos/showreel.mp4', poster: BASE + 'videos/showreel.jpg' };
+// Hero video: silent loop (audio stripped), full width on phones
+export const HERO_VIDEO = { src: BASE + 'videos/ana.mp4', poster: BASE + 'videos/ana.jpg' };
 
 const PROJECTS = [
   { id: 'desir', textKey: 'desir', name: 'Désir', video: 'desir' },

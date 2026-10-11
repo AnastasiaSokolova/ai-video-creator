@@ -41,7 +41,7 @@ ffmpeg -ss 0.6 -i input.mp4 -frames:v 1 -vf "scale=720:-2" -q:v 4 public/videos/
 
 For 16:9 films use `scale=1280:-2`. Stills: `ffmpeg -i still.png -vf "scale=1200:-2" -q:v 3 public/images/NAME.jpg`.
 
-The hero showreel (`public/videos/showreel.mp4`) is a silent ~13 s montage cut from the project films.
+The hero video is `public/videos/ana.mp4`: 1080p, audio stripped (it always plays muted), set as `HERO_VIDEO` in `src/data/projects.js`.
 
 ## Contact form
 

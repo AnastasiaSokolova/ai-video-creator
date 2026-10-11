@@ -142,6 +142,16 @@ section[id], article[id] { scroll-margin-top: 72px; }
   width: max(135px, min(calc((100svh - clamp(88px, 12vh, 130px) - 210px) * 9 / 16), 22.5vw, 360px));
   aspect-ratio: 9 / 16;
 }
+/* Phones: the video leaves its corner box and runs full screen width, edge to edge, above the title */
+@media (max-width: 760px) {
+  .hero { justify-content: flex-start; min-height: 0; padding-top: calc(60px + env(safe-area-inset-top)); }
+  .hero-reel {
+    position: relative; top: auto; right: auto;
+    width: auto; margin: 0 calc(-1 * var(--pad-x)) clamp(28px, 8vw, 40px);
+  }
+  .hero-reel-meta { top: 14px; left: var(--pad-x); right: var(--pad-x); font-size: 10px; }
+  .hero.lang-uk .hero-title { margin-bottom: 0; }
+}
 .hero-reel-meta {
   position: absolute; top: 10px; left: 10px; right: 10px; z-index: 1;
   display: flex; flex-direction: column; gap: 4px; white-space: nowrap; overflow: hidden; pointer-events: none;
