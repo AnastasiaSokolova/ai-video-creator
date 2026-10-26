@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { A, FEATURED, PROJECTS } from '../data/content.js';
+import { A, PROJECTS } from '../data/content.js';
 import { prefersReducedMotion } from '../hooks/media.js';
 
 const FILTERS = [['all', 'fAll'], ['campaign', 'fCampaign'], ['photo', 'fPhoto'], ['video', 'fVideo'], ['ugc', 'fUgc']];
@@ -16,11 +16,34 @@ export function cardMeta(p, t, lang) {
   return parts.join(' · ');
 }
 
+// Opens on a single tap on phones. iPhone Safari can swallow the first tap on a card in a
+// scroll-snapping carousel (it's spent stopping the snap/momentum), so a finger lifted without
+// moving opens the project straight away; a swipe still just scrolls. Mouse and keyboard use onClick.
+function useTap(action) {
+  const start = useRef(null);
+  return {
+    onTouchStart: (e) => { const p = e.touches[0]; start.current = { x: p.clientX, y: p.clientY, at: Date.now() }; },
+    onTouchMove: (e) => {
+      const s = start.current, p = e.touches[0];
+      if (s && (Math.abs(p.clientX - s.x) > 10 || Math.abs(p.clientY - s.y) > 10)) start.current = null;
+    },
+    onTouchEnd: (e) => {
+      const s = start.current;
+      start.current = null;
+      if (!s || Date.now() - s.at > 700) return;
+      e.preventDefault(); // stops the follow-up click, so it doesn't open twice
+      action();
+    },
+    onClick: action
+  };
+}
+
 function Card({ p, i, t, lang, onOpen, eager }) {
+  const tap = useTap(() => onOpen(p.id));
   const meta = cardMeta(p, t, lang);
   const badge = p.kind === 'campaign' ? t.badgeCampaign : p.kind === 'photo' ? t.badgePhoto : '▶ ' + t.badgeVideo;
   return (
-    <button type="button" className="card" onClick={() => onOpen(p.id)} aria-label={`${t.open}: ${p.title[lang]}, ${meta}`}>
+    <button type="button" className="card" {...tap} aria-label={`${t.open}: ${p.title[lang]}, ${meta}`}>
       <span className="card-cover">
         <img src={A + p.cover + '.jpg'} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" style={{ objectPosition: p.pos }} />
         <span className="badge mono">{badge}</span>
@@ -38,13 +61,12 @@ function Card({ p, i, t, lang, onOpen, eager }) {
 
 export default function Work({ t, lang, onOpen }) {
   const [filter, setFilter] = useState('all');
-  const [showAll, setShowAll] = useState(false);
   const [idx, setIdx] = useState(0);
   const [edges, setEdges] = useState({ start: true, end: false });
   const scRef = useRef(null);
 
-  const items = filter !== 'all' ? PROJECTS.filter((p) => p.tags.includes(filter))
-    : showAll ? PROJECTS : PROJECTS.filter((p) => FEATURED.includes(p.id));
+  // All projects, always (the selected ones come first — see FEATURED in content.js)
+  const items = filter === 'all' ? PROJECTS : PROJECTS.filter((p) => p.tags.includes(filter));
   const n = items.length;
   const ci = Math.min(idx, Math.max(0, n - 1));
 
@@ -68,7 +90,7 @@ export default function Work({ t, lang, onOpen }) {
     onScroll();
     addEventListener('resize', onScroll);
     return () => removeEventListener('resize', onScroll);
-  }, [filter, showAll]);
+  }, [filter]);
   const go = (d) => {
     const el = scRef.current;
     if (!el || !el.children[0]) return;
@@ -80,18 +102,11 @@ export default function Work({ t, lang, onOpen }) {
     el.scrollTo({ left: el.children[i].offsetLeft - el.children[0].offsetLeft, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
   };
 
-  const toggleAll = () => {
-    const was = showAll;
-    setShowAll(!was);
-    resetCarousel();
-    if (was) document.getElementById('work')?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
-  };
-
   return (
     <section id="work" className="work wrap" aria-labelledby="work-title">
       <div className="work-head">
         <div className="work-intro">
-          <h2 id="work-title" className="serif display">{t.workT1} <em>{t.workT2}</em></h2>
+          <h2 id="work-title" className="serif display">{t.workT1}{t.workT2 && <> <em>{t.workT2}</em></>}</h2>
           <p>{t.workIntro}</p>
         </div>
         <div role="group" aria-label={t.filterLabel} className="filters">
@@ -112,14 +127,6 @@ export default function Work({ t, lang, onOpen }) {
         <button type="button" className="round-btn" aria-label={t.prev} onClick={() => go(-1)} disabled={edges.start}>←</button>
         <button type="button" className="round-btn is-dark" aria-label={t.next} onClick={() => go(1)} disabled={edges.end}>→</button>
       </div>
-
-      {filter === 'all' && (
-        <div className="show-all">
-          <button type="button" className="btn btn-ghost" aria-expanded={showAll} onClick={toggleAll}>
-            {showAll ? t.showLess : `${t.showAll} (${PROJECTS.length})`}
-          </button>
-        </div>
-      )}
     </section>
   );
 }

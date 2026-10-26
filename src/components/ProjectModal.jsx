@@ -34,6 +34,7 @@ export default function ProjectModal({ t, lang, openId, setOpenId, onSimilar }) 
                 <h2 id="m-title" className="serif">{p.title[lang]}</h2>
                 {p.note && <span className="m-note">{p.note[lang]}</span>}
                 <p className="m-desc">{p.desc[lang]}</p>
+                {p.unofficial && <p className="m-disclaimer">{t.unofficial}</p>}
                 <div>
                   <h3 className="m-deliv-title">{t.deliverables}</h3>
                   <ul className="m-deliv">
@@ -41,17 +42,6 @@ export default function ProjectModal({ t, lang, openId, setOpenId, onSimilar }) 
                   </ul>
                 </div>
                 <button type="button" className="btn btn-solid m-similar" onClick={() => onSimilar(p)}>{t.startSimilar} →</button>
-                {p.sources.length > 0 && (
-                  <details className="m-sources">
-                    <summary>{t.sourcesToggle}</summary>
-                    <div>
-                      <p>{p.sourceNote[lang]}</p>
-                      <div className="m-sources-imgs">
-                        {p.sources.map((s) => <img key={s.src} src={s.src} alt={p.title[lang] + ' — original'} width={s.w} height={s.h} loading="lazy" />)}
-                      </div>
-                    </div>
-                  </details>
-                )}
               </div>
               {wide ? (
                 <div className="m-media-slider">

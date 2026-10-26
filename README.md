@@ -28,7 +28,7 @@ The live site deploys from `main` on GitHub.
 | Photos and posters                                     | `public/assets/*.jpg`                       |
 | Videos                                                 | `public/assets/video/*.mp4`                 |
 
-The projects listed in `FEATURED` (in `content.js`) show by default, in that order; the rest follow under "Show all work".
+All projects always show; the ones listed in `FEATURED` (in `content.js`) come first, in that order.
 Filter chips come from each project's `tags` (`campaign`, `photo`, `video`, `ugc`).
 
 ## Adding a video

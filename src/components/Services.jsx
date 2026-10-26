@@ -34,13 +34,18 @@ export default function Services({ t, lang, onPick }) {
           ))}
         </div>
         <div className="includes">
-          <p className="mono includes-title">{t.includesTitle}</p>
-          {t.inc.map(([title, desc]) => (
-            <div key={title}>
-              <span className="includes-item">{title}</span>
-              <span className="includes-desc">{desc}</span>
-            </div>
-          ))}
+          <h3 className="includes-title serif">{t.includesTitle}</h3>
+          <ul className="includes-list">
+            {t.inc.map(([title, desc]) => (
+              <li key={title}>
+                <span aria-hidden="true" className="includes-check">✓</span>
+                <span className="includes-text">
+                  <strong>{title}</strong>
+                  <span>{desc}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="fine">{t.fine}</p>
       </div>

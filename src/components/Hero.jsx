@@ -2,15 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { A, HERO, HERO_VIDEO } from '../data/content.js';
 import { prefersReducedMotion, safePlay } from '../hooks/media.js';
 
-// Showreel: starts muted (browsers only autoplay silently), and a tap/click on the video
-// or the "Sound on" button turns the music on — that tap is the permission browsers need,
+// Showreel: starts muted (browsers only autoplay silently), and a tap/click anywhere on the
+// video turns the music on (and off again) — that tap is the permission browsers need,
 // on desktop and on phones. Pauses while a project is open or when scrolled out of view,
-// and resumes afterwards unless the visitor paused it themselves.
+// and resumes afterwards. With reduced motion it waits for that tap before playing.
 export default function Hero({ t, modalOpen }) {
   const ref = useRef(null);
   const userPaused = useRef(false);
   const visible = useRef(true);
-  const [playing, setPlaying] = useState(false);
   const [soundOn, setSoundOn] = useState(false);
   const [file, poster] = HERO[HERO_VIDEO] || HERO.bags;
 
@@ -33,12 +32,6 @@ export default function Hero({ t, modalOpen }) {
     io.observe(v);
     return () => io.disconnect();
   }, [modalOpen]);
-
-  const togglePlay = () => {
-    const v = ref.current;
-    if (v.paused) { userPaused.current = false; safePlay(v); }
-    else { userPaused.current = true; v.pause(); }
-  };
 
   const toggleSound = () => {
     const v = ref.current;
@@ -72,22 +65,14 @@ export default function Hero({ t, modalOpen }) {
             playsInline
             preload="metadata"
             aria-label={t.showreel}
-            onPlay={() => setPlaying(true)}
-            onPause={() => setPlaying(false)}
           />
-          {/* The whole video is a sound switch; the hint shows until sound is on */}
+          {/* The whole video is a sound switch: "Tap for sound" while muted, moving bars while music plays */}
           <button type="button" className="hero-tap" onClick={toggleSound} aria-label={soundOn ? t.soundOff : t.soundOn} aria-pressed={soundOn}>
-            {!soundOn && <span className="hero-tap-hint"><span aria-hidden="true" className="sound-icon"><i /><i /><i /></span>{t.tapSound}</span>}
+            <span className={`hero-tap-hint ${soundOn ? 'is-on' : ''}`}>
+              <span aria-hidden="true" className={`sound-icon ${soundOn ? 'is-on' : ''}`}><i /><i /><i /></span>
+              {!soundOn && t.tapSound}
+            </span>
           </button>
-        </div>
-        <div className="hero-controls">
-          <button type="button" className="pill-btn" onClick={togglePlay} aria-label={playing ? t.pauseAria : t.playAria}>
-            <span aria-hidden="true" className="pill-icon">{playing ? '❚❚' : '▶'}</span>{playing ? t.pause : t.play}
-          </button>
-          <button type="button" className={`pill-btn ${soundOn ? 'is-on' : ''}`} onClick={toggleSound} aria-pressed={soundOn}>
-            <span aria-hidden="true" className={`sound-icon ${soundOn ? 'is-on' : ''}`}><i /><i /><i /></span>{soundOn ? t.soundOff : t.soundOn}
-          </button>
-          <span className="mono muted hero-label">{t.showreel}</span>
         </div>
       </div>
     </section>
