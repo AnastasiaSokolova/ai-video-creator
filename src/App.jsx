@@ -1,73 +1,82 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { UIContext } from './context.js';
-import { I18N } from './data/i18n.js';
-import { useReveal } from './hooks/useScrollEffects.js';
+import { useCallback, useEffect, useState } from 'react';
+import { EMPTY, STR } from './data/content.js';
+import { prefersReducedMotion, useWide } from './hooks/media.js';
 import Header from './components/Header.jsx';
 import Hero from './components/Hero.jsx';
 import Work from './components/Work.jsx';
 import Services from './components/Services.jsx';
-import About from './components/About.jsx';
+import About, { Process } from './components/About.jsx';
 import Contact from './components/Contact.jsx';
-import Footer from './components/Footer.jsx';
-import FilmViewer from './components/FilmViewer.jsx';
+import ProjectModal from './components/ProjectModal.jsx';
 
-const LANG_KEY = 'anasokolova.lang';
-const savedLang = () => { try { const l = localStorage.getItem(LANG_KEY); return l === 'uk' ? 'uk' : 'en'; } catch { return 'en'; } };
+// Language: ?lang=ua|en in the URL wins, then the saved choice, then English (as in the design)
+function initialLang() {
+  try {
+    const q = new URLSearchParams(location.search).get('lang');
+    const l = q === 'ua' || q === 'en' ? q : localStorage.getItem('as_lang');
+    return l === 'ua' ? 'ua' : 'en';
+  } catch { return 'en'; }
+}
 
 export default function App() {
-  const [lang, setLangState] = useState(savedLang);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [filmIndex, setFilmIndex] = useState(null);
-  const [picked, setPicked] = useState(null);
-  const t = I18N[lang];
-  const viewerOpen = filmIndex !== null;
-
-  useReveal();
+  const [lang, setLangState] = useState(initialLang);
+  const [menu, setMenu] = useState(false);
+  const [openId, setOpenId] = useState(null);
+  const [form, setForm] = useState({ ...EMPTY });
+  const [focusKey, setFocusKey] = useState(0);
+  const wide = useWide();
+  const t = STR[lang];
 
   const setLang = useCallback((l) => {
     setLangState(l);
-    try { localStorage.setItem(LANG_KEY, l); } catch { /* storage blocked */ }
+    try {
+      localStorage.setItem('as_lang', l);
+      const u = new URL(location.href);
+      u.searchParams.set('lang', l);
+      history.replaceState(null, '', u);
+    } catch { /* storage or history blocked */ }
   }, []);
 
-  // Keep <html lang>, the tab title and meta description in the current language
   useEffect(() => {
-    document.documentElement.lang = lang;
-    document.title = t.metaTitle;
-    document.querySelector('meta[name="description"]')?.setAttribute('content', t.metaDesc);
-  }, [lang, t]);
+    document.documentElement.lang = lang === 'ua' ? 'uk' : 'en';
+    document.title = lang === 'ua' ? 'Ана Соколова — AI visual creator і креативна директорка' : 'Ana Sokolova — AI Visual Creator & Creative Director';
+  }, [lang]);
 
-  // Follow a language change made in another tab
+  // No page scrolling behind the phone menu or the project popup
   useEffect(() => {
-    const onStorage = (e) => { if (e.key === LANG_KEY && (e.newValue === 'en' || e.newValue === 'uk')) setLangState(e.newValue); };
-    addEventListener('storage', onStorage);
-    return () => removeEventListener('storage', onStorage);
-  }, []);
+    document.body.classList.toggle('is-locked', menu || !!openId);
+  }, [menu, openId]);
 
-  // Stop the page scrolling behind the mobile menu and the viewer
-  useEffect(() => {
-    document.body.classList.toggle('is-locked', menuOpen || viewerOpen);
-  }, [menuOpen, viewerOpen]);
+  const openProject = (id) => { setMenu(false); setOpenId(id); };
 
-  const ui = useMemo(() => ({
-    t, lang,
-    overlayOpen: viewerOpen,
-    openFilm: (i) => { setMenuOpen(false); setFilmIndex(i); },
-    pickService: (key) => setPicked({ key })
-  }), [t, lang, viewerOpen]);
+  // Prefill the form (a package, or "something like <project>") and take the visitor there
+  const goContact = (service, desc) => {
+    setForm((f) => ({ ...f, service: service ?? f.service, desc: desc && !f.desc ? desc : f.desc }));
+    setFocusKey((k) => k + 1);
+    setTimeout(() => {
+      const el = document.getElementById('contact');
+      if (el) window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 64, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+    }, 40);
+  };
 
   return (
-    <UIContext.Provider value={ui}>
-      <div className="grain" aria-hidden="true" />
-      <Header setLang={setLang} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+    <>
+      <Header t={t} lang={lang} setLang={setLang} wide={wide} menu={menu} setMenu={setMenu} />
       <main id="top">
-        <Hero />
-        <Work />
-        <Services />
-        <About />
-        <Contact picked={picked} />
+        <Hero t={t} modalOpen={!!openId} />
+        <Work t={t} lang={lang} onOpen={openProject} />
+        <Services t={t} lang={lang} onPick={(id) => goContact(id)} />
+        <Process t={t} />
+        <About t={t} />
+        <Contact t={t} lang={lang} form={form} setForm={setForm} focusKey={focusKey} />
       </main>
-      <Footer />
-      <FilmViewer index={filmIndex} onChange={setFilmIndex} onClose={() => setFilmIndex(null)} />
-    </UIContext.Provider>
+      <ProjectModal
+        t={t}
+        lang={lang}
+        openId={openId}
+        setOpenId={setOpenId}
+        onSimilar={(p) => { setOpenId(null); goContact(null, t.similar(p.title[lang])); }}
+      />
+    </>
   );
 }

@@ -1,170 +1,125 @@
-import { useUI } from '../context.js';
-import { byId, projectShort, projects } from '../data/projects.js';
-import FilmFrame, { WatchLink } from './FilmFrame.jsx';
+import { useEffect, useRef, useState } from 'react';
+import { A, FEATURED, PROJECTS } from '../data/content.js';
+import { prefersReducedMotion } from '../hooks/media.js';
 
-const ROMAN = ['I', 'II', 'III'];
-const Eyebrow = ({ project, cat }) => <p className="mono muted eyebrow">{project.num} — {cat}</p>;
+const FILTERS = [['all', 'fAll'], ['campaign', 'fCampaign'], ['photo', 'fPhoto'], ['video', 'fVideo'], ['ugc', 'fUgc']];
 
-// Désir and Aurora: tall film on the left, big title on the right
-function FeatureProject({ project, title }) {
-  const { t } = useUI();
-  const copy = t.p[project.textKey];
+const counts = { all: PROJECTS.length, campaign: 0, photo: 0, video: 0, ugc: 0 };
+PROJECTS.forEach((p) => p.tags.forEach((tag) => { counts[tag]++; }));
+
+// "Haircare campaign · 3 photos + film" or "Fragrance film · 0:21"
+export function cardMeta(p, t, lang) {
+  const n = p.photos.length, v = p.videos.length;
+  const parts = [p.type[lang]];
+  if (n) parts.push(t.photos(n) + (v ? ' + ' + t.film : ''));
+  else if (v) parts.push(p.videos[0].dur);
+  return parts.join(' · ');
+}
+
+function Card({ p, i, t, lang, onOpen, eager }) {
+  const meta = cardMeta(p, t, lang);
+  const badge = p.kind === 'campaign' ? t.badgeCampaign : p.kind === 'photo' ? t.badgePhoto : '▶ ' + t.badgeVideo;
   return (
-    <article id={project.id} className="feature" aria-labelledby={project.id + '-t'}>
-      <div className="feature-media" data-reveal>
-        <FilmFrame project={project}><span className="frame-tag mono">{t.film} · 9:16</span></FilmFrame>
-      </div>
-      <div className="feature-text" data-reveal>
-        <Eyebrow project={project} cat={copy.cat} />
-        <h3 id={project.id + '-t'} className="serif feature-title">{title}</h3>
-        <p className="body-copy">{copy.d}</p>
-        <WatchLink project={project} label={t.watchFilm} />
-      </div>
-    </article>
+    <button type="button" className="card" onClick={() => onOpen(p.id)} aria-label={`${t.open}: ${p.title[lang]}, ${meta}`}>
+      <span className="card-cover">
+        <img src={A + p.cover + '.jpg'} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" style={{ objectPosition: p.pos }} />
+        <span className="badge mono">{badge}</span>
+      </span>
+      <span className="card-caption">
+        <span className="card-num serif">{String(i + 1).padStart(2, '0')}</span>
+        <span className="card-text">
+          <span className="card-title serif">{p.title[lang]}</span>
+          <span className="card-meta">{meta}</span>
+        </span>
+      </span>
+    </button>
   );
 }
 
-function Still({ project, src, i }) {
-  const { t } = useUI();
-  return (
-    <figure className="still" data-reveal>
-      <div className="frame still-frame">
-        <img src={src} alt={`${project.name} — ${t.still} ${ROMAN[i]}`} loading="lazy" decoding="async" />
-      </div>
-      <figcaption className="mono muted caption">{ROMAN[i]} — {t.still}</figcaption>
-    </figure>
-  );
-}
+export default function Work({ t, lang, onOpen }) {
+  const [filter, setFilter] = useState('all');
+  const [showAll, setShowAll] = useState(false);
+  const [idx, setIdx] = useState(0);
+  const [edges, setEdges] = useState({ start: true, end: false });
+  const scRef = useRef(null);
 
-// Ellips and Laneige: campaign film + three stills; `mirror` flips the layout
-function CampaignProject({ project, mirror = false, italic = false }) {
-  const { t } = useUI();
-  const copy = t.p[project.textKey];
-  const [s1, s2, s3] = project.stills;
-  return (
-    <article id={project.id} className={`campaign ${mirror ? 'is-mirror' : ''}`} aria-labelledby={project.id + '-t'}>
-      <div className="campaign-head" data-reveal>
-        <h3 id={project.id + '-t'} className={`serif campaign-title ${italic ? 'italic' : ''}`}>{project.name}</h3>
-        <p className="mono muted eyebrow">{project.num} — {copy.cat}</p>
-      </div>
-      <div className="campaign-body">
-        <figure className="campaign-film" data-reveal>
-          <FilmFrame project={project} />
-          <figcaption className="mono muted caption caption-row"><span>{t.campaignFilm}</span><span>9:16</span></figcaption>
-        </figure>
-        <div className="campaign-stills">
-          {mirror ? (
-            <>
-              <div className="stills-col"><Still project={project} src={s1} i={0} /><Still project={project} src={s2} i={1} /></div>
-              <div className="stills-col stills-offset"><Still project={project} src={s3} i={2} /></div>
-            </>
-          ) : (
-            <>
-              <div className="stills-col stills-offset"><Still project={project} src={s1} i={0} /></div>
-              <div className="stills-col"><Still project={project} src={s2} i={1} /><Still project={project} src={s3} i={2} /></div>
-            </>
-          )}
-        </div>
-      </div>
-      <div className="campaign-foot" data-reveal>
-        <p className="body-copy">{copy.d}</p>
-        <WatchLink project={project} label={t.viewCampaign} />
-      </div>
-    </article>
-  );
-}
+  const items = filter !== 'all' ? PROJECTS.filter((p) => p.tags.includes(filter))
+    : showAll ? PROJECTS : PROJECTS.filter((p) => FEATURED.includes(p.id));
+  const n = items.length;
+  const ci = Math.min(idx, Math.max(0, n - 1));
 
-function RoomProject({ project }) {
-  const { t } = useUI();
-  const copy = t.p.room;
+  const resetCarousel = () => { setIdx(0); if (scRef.current) scRef.current.scrollLeft = 0; requestAnimationFrame(onScroll); };
+  const pickFilter = (f) => { setFilter(f); resetCarousel(); };
+
+  // Slider (all screen sizes): track the first card in view, whether we're at either end,
+  // and step one card at a time with the arrow buttons
+  const onScroll = () => {
+    const el = scRef.current;
+    if (!el || !el.children[0]) return;
+    const step = el.children[1] ? el.children[1].offsetLeft - el.children[0].offsetLeft : el.children[0].offsetWidth;
+    const max = el.children.length - 1;
+    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
+    let i = Math.round(el.scrollLeft / step);
+    if (atEnd) i = max;
+    setIdx(Math.min(max, Math.max(0, i)));
+    setEdges({ start: el.scrollLeft <= 4, end: atEnd });
+  };
+  useEffect(() => {
+    onScroll();
+    addEventListener('resize', onScroll);
+    return () => removeEventListener('resize', onScroll);
+  }, [filter, showAll]);
+  const go = (d) => {
+    const el = scRef.current;
+    if (!el || !el.children[0]) return;
+    // Step from the card actually at the left edge (at the very end the counter shows the
+    // last card, but several cards are in view, so stepping from the counter would go nowhere)
+    const step = el.children[1] ? el.children[1].offsetLeft - el.children[0].offsetLeft : el.children[0].offsetWidth;
+    const first = Math.round(el.scrollLeft / step);
+    const i = Math.min(el.children.length - 1, Math.max(0, first + d));
+    el.scrollTo({ left: el.children[i].offsetLeft - el.children[0].offsetLeft, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+  };
+
+  const toggleAll = () => {
+    const was = showAll;
+    setShowAll(!was);
+    resetCarousel();
+    if (was) document.getElementById('work')?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+  };
+
   return (
-    <section id={project.id} className="room" aria-labelledby="room-t">
-      <div className="room-inner">
-        <div className="room-bar mono muted" data-reveal>
-          <span>{project.num} — {copy.cat}</span>
-          <span className="center">{copy.genre}</span>
-          <span className="right">16:9</span>
+    <section id="work" className="work wrap" aria-labelledby="work-title">
+      <div className="work-head">
+        <div className="work-intro">
+          <h2 id="work-title" className="serif display">{t.workT1} <em>{t.workT2}</em></h2>
+          <p>{t.workIntro}</p>
         </div>
-        <div className="room-head" data-reveal>
-          <p className="mono muted">{copy.by}</p>
-          <h3 id="room-t" className="serif room-title">ROOM <span className="accent-italic">505</span></h3>
-        </div>
-        <div className="room-screen" data-reveal>
-          <span className="corner tl" aria-hidden="true" /><span className="corner tr" aria-hidden="true" />
-          <span className="corner bl" aria-hidden="true" /><span className="corner br" aria-hidden="true" />
-          <FilmFrame project={project} />
-        </div>
-        <div className="room-foot">
-          <p className="serif room-logline" data-reveal>{copy.d}</p>
-          <div className="room-credits" data-reveal>
-            <dl>
-              <dt className="mono muted">{copy.lblDir}</dt><dd>Ana Sokolova</dd>
-              <dt className="mono muted">{copy.lblGenre}</dt><dd>{copy.genre}</dd>
-              <dt className="mono muted">{copy.lblFormat}</dt><dd>16:9</dd>
-            </dl>
-            <WatchLink project={project} label={t.watchTheFilm} />
-          </div>
+        <div role="group" aria-label={t.filterLabel} className="filters">
+          {FILTERS.filter(([k]) => counts[k] > 0).map(([k, label]) => (
+            <button key={k} type="button" className="filter" aria-pressed={filter === k} onClick={() => pickFilter(k)}>
+              <span aria-hidden="true" className="filter-dot" />{t[label]}<span className="mono filter-count">{counts[k]}</span>
+            </button>
+          ))}
         </div>
       </div>
+
+      <div ref={scRef} onScroll={onScroll} className="carousel" role="region" aria-roledescription="carousel" aria-label={t.workTitle}>
+        {items.map((p, i) => <Card key={p.id} p={p} i={i} t={t} lang={lang} onOpen={onOpen} eager={i < 3} />)}
+      </div>
+      <div className="carousel-nav">
+        <span aria-live="polite" className="mono carousel-pos">{String(ci + 1).padStart(2, '0')} / {String(n).padStart(2, '0')}</span>
+        <span aria-hidden="true" className="carousel-track"><span style={{ width: n ? ((ci + 1) / n * 100) + '%' : 0 }} /></span>
+        <button type="button" className="round-btn" aria-label={t.prev} onClick={() => go(-1)} disabled={edges.start}>←</button>
+        <button type="button" className="round-btn is-dark" aria-label={t.next} onClick={() => go(1)} disabled={edges.end}>→</button>
+      </div>
+
+      {filter === 'all' && (
+        <div className="show-all">
+          <button type="button" className="btn btn-ghost" aria-expanded={showAll} onClick={toggleAll}>
+            {showAll ? t.showLess : `${t.showAll} (${PROJECTS.length})`}
+          </button>
+        </div>
+      )}
     </section>
-  );
-}
-
-// Cupcake, UGC and Jewelry: smaller cards in one row (wraps on narrower screens)
-function CardProject({ project, tag, label }) {
-  const { t } = useUI();
-  const copy = t.p[project.textKey];
-  // UGC and Jewelry have a translated two-part title; Cupcake uses its name in italics
-  const title = copy.t1
-    ? <>{copy.t1}<span className="accent-italic">{copy.t2}</span></>
-    : <span className="italic">{project.name}</span>;
-  return (
-    <article id={project.id} className="card" aria-labelledby={project.id + '-t'} data-reveal>
-      <FilmFrame project={project}><span className="frame-tag mono">{tag} · 9:16</span></FilmFrame>
-      <Eyebrow project={project} cat={copy.cat} />
-      <h3 id={project.id + '-t'} className="serif card-title">{title}</h3>
-      <p className="body-copy small">{copy.d}</p>
-      <WatchLink project={project} label={label} />
-    </article>
-  );
-}
-
-export default function Work() {
-  const { t } = useUI();
-  const { desir, ellips, laneige, aurora, room505, cupcake, ugc, jewelry } = byId;
-
-  return (
-    <>
-      <section id="work" className="work" aria-labelledby="work-title">
-        <div className="work-head" data-reveal>
-          <h2 id="work-title" className="serif section-display">{t.work1} <span className="accent-italic">{t.work2}</span></h2>
-          <nav aria-label={`${t.work1} ${t.work2}`} className="work-index">
-            <ol className="mono">
-              {projects.map((p) => (
-                <li key={p.id}><a href={'#' + p.id}><span className="accent">{p.num}</span><span>{projectShort(p, t)}</span></a></li>
-              ))}
-            </ol>
-          </nav>
-        </div>
-        {desir && <FeatureProject project={desir} title="Désir" />}
-        {ellips && <CampaignProject project={ellips} />}
-        {laneige && <CampaignProject project={laneige} mirror italic />}
-        {aurora && <FeatureProject project={aurora} title={<>Aurora <span className="italic">Vitamins</span></>} />}
-      </section>
-
-      {room505 && <RoomProject project={room505} />}
-
-      <section className="shorts" aria-label={`${t.work1} ${t.work2}`}>
-        <div className="cards">
-          {cupcake && <CardProject project={cupcake} tag={t.film} label={t.watchShort} />}
-          {ugc && <CardProject project={ugc} tag="UGC" label={t.watchVideo} />}
-          {jewelry && <CardProject project={jewelry} tag={t.film} label={t.watchVideo} />}
-        </div>
-        <div className="more-line mono muted" data-reveal>
-          <span>{t.moreLine}</span>
-          <a href="#contact">{t.fullReel} →</a>
-        </div>
-      </section>
-    </>
   );
 }

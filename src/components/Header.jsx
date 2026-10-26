@@ -1,67 +1,52 @@
-import { useEffect, useRef } from 'react';
-import { useUI } from '../context.js';
-import { useMediaQuery, useNavScroll } from '../hooks/useScrollEffects.js';
+import { useEffect } from 'react';
+import { EMAIL } from '../data/content.js';
 
-const LINKS = ['work', 'services', 'about', 'contact'];
+const NAV = ['#work', '#services', '#about', '#contact'];
 
-export default function Header({ setLang, menuOpen, setMenuOpen }) {
-  const { t, lang } = useUI();
-  const narrow = useMediaQuery('(max-width: 760px)');
-  const { scrolled, hidden } = useNavScroll(menuOpen);
-  const toggleRef = useRef(null);
-  const wasOpen = useRef(false);
-
-  // Close the menu on Escape or when the window grows past the mobile breakpoint
-  useEffect(() => { if (!narrow) setMenuOpen(false); }, [narrow, setMenuOpen]);
+export default function Header({ t, lang, setLang, wide, menu, setMenu }) {
+  // Escape closes the phone menu; it also closes when the window grows to desktop width
+  useEffect(() => { if (wide) setMenu(false); }, [wide, setMenu]);
   useEffect(() => {
-    if (!menuOpen) return;
-    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
-    addEventListener('keydown', onKey);
-    return () => removeEventListener('keydown', onKey);
-  }, [menuOpen, setMenuOpen]);
-  useEffect(() => {
-    if (!menuOpen && wasOpen.current) toggleRef.current?.focus({ preventScroll: true });
-    wasOpen.current = menuOpen;
-  }, [menuOpen]);
+    if (!menu) return;
+    const onKey = (e) => { if (e.key === 'Escape') setMenu(false); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [menu, setMenu]);
 
-  const cls = ['site-header', scrolled && !menuOpen && 'is-scrolled', hidden && 'is-hidden'].filter(Boolean).join(' ');
+  const close = () => setMenu(false);
 
   return (
     <>
-      <header className={cls}>
-        <a href="#top" className="brand" aria-label={t.homeLabel}>ANA SOKOLOVA</a>
-        <div className="header-right">
-          {!narrow && (
-            <>
-              <nav className="nav" aria-label={t.navLabel}>
-                {LINKS.map((k) => (
-                  <a key={k} href={'#' + k} className={k === 'contact' ? 'is-accent' : ''}>{t.nav[k]}</a>
-                ))}
+      <a className="skip-link" href="#work">{t.skip}</a>
+      <header className="site-header">
+        <div className="wrap header-row">
+          <a href="#top" className="logo" onClick={close}>Ana <span>Sokolova</span></a>
+          <div className="header-right">
+            {wide && (
+              <nav aria-label="Main" className="nav">
+                {NAV.map((href, i) => <a key={href} href={href}>{t.nav[i]}</a>)}
               </nav>
-              <span className="divider" aria-hidden="true" />
-            </>
-          )}
-          <div className="lang" role="group" aria-label={t.langLabel}>
-            <button type="button" lang="en" aria-pressed={lang === 'en'} aria-label="English" onClick={() => setLang('en')}>EN</button>
-            <span aria-hidden="true">/</span>
-            <button type="button" lang="uk" aria-pressed={lang === 'uk'} aria-label="Українська" onClick={() => setLang('uk')}>UA</button>
+            )}
+            <div role="group" aria-label={t.langLabel} className="lang-switch">
+              <button type="button" lang="en" aria-pressed={lang === 'en'} onClick={() => setLang('en')}>EN</button>
+              <button type="button" lang="uk" aria-pressed={lang === 'ua'} onClick={() => setLang('ua')}>UA</button>
+            </div>
+            {!wide && (
+              <button type="button" className="menu-btn" aria-expanded={menu} aria-controls="mobile-menu" onClick={() => setMenu(!menu)}>
+                {menu ? t.close : t.menu}
+              </button>
+            )}
           </div>
-          {narrow && (
-            <button ref={toggleRef} type="button" className="menu-toggle" aria-expanded={menuOpen} aria-controls="mobile-menu" onClick={() => setMenuOpen(!menuOpen)}>
-              {menuOpen ? t.close : t.menu}
-            </button>
-          )}
         </div>
+        {menu && !wide && (
+          <nav id="mobile-menu" aria-label="Main" className="mobile-menu">
+            {NAV.map((href, i) => (
+              <a key={href} href={href} onClick={close}>{t.nav[i]}<span aria-hidden="true">→</span></a>
+            ))}
+            <a className="mobile-menu-email" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+          </nav>
+        )}
       </header>
-
-      {narrow && menuOpen && (
-        <nav id="mobile-menu" className="mobile-menu" aria-label={t.navLabel}>
-          {LINKS.map((k) => (
-            <a key={k} href={'#' + k} className={k === 'contact' ? 'is-accent' : ''} onClick={() => setMenuOpen(false)}>{t.nav[k]}</a>
-          ))}
-          <p className="mobile-menu-title mono">{t.title}</p>
-        </nav>
-      )}
     </>
   );
 }
